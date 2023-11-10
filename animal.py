@@ -1,10 +1,11 @@
 import random
 from utils import random_name
+from pos import pos
 
 class Animal:
-    def __init__(self, name, size, speed, vision, strength, reproduction_rate, energy):
-        #self.pos  # <-- every animal needs a position so they can be tracked (represented by coordinate class)
+    def __init__(self, name, position, size, speed, vision, strength, reproduction_rate, energy):
         self.name = name
+        self.position = position
         self.size = size
         self.speed = speed
         self.vision = vision
@@ -60,7 +61,8 @@ class Animal:
         vision = round(self.mutate_trait(self.inherit_traits(self.vision, partner.vision, inheritence_method)), 1)
         strength = round(self.mutate_trait(self.inherit_traits(self.strength, partner.strength, inheritence_method)), 1)
 
-        return Animal(name=random_name(), size=size, speed=speed, vision=vision, strength=strength, reproduction_rate=0.2, energy=50)
+        return Animal(name=random_name(), position= self.position, size=size, speed=speed, vision=vision, strength=strength,
+                       reproduction_rate=0.2, energy=50)
 
     def eat(self):
         # Implement eat logic
@@ -74,13 +76,14 @@ class Animal:
         # Implement default action logic
         pass
 
-    def causes_of_death(self):
-        # Implement causes_of_death logic, e.g., based on energy depletion, environmental factors, etc.
+    def death(self):
+        # Implement death logic, e.g., based on energy depletion, environmental factors, etc.
         pass
 
-# Examples
-animal1 = Animal(name="Animal1", size=10, speed=5, vision=8, strength=7, reproduction_rate=0.2, energy=50)
-animal2 = Animal(name="Animal2", size=12, speed=10, vision=7, strength=6, reproduction_rate=0.18, energy=45)
+# Examples & other stuff
+c1 = pos(0,0)
+animal1 = Animal(name="Animal1", position = c1, size=10, speed=5, vision=8, strength=7, reproduction_rate=0.2, energy=50)
+animal2 = Animal(name="Animal2", position = c1, size=12, speed=10, vision=7, strength=6, reproduction_rate=0.18, energy=45)
 
 # Mutation example
 mutated_size = animal1.mutate_trait(animal1.size)
