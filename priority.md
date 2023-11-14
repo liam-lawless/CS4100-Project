@@ -1,4 +1,4 @@
-#### Priority List
+## Priority List
 *What needs to be accomplished next?*
 
 1. Set up a controller (main.py)
@@ -10,8 +10,10 @@ Needs to happen in no apparent order:
 - Switch trait mutation from floats to int & mutation either by +1 or -1, no floats
 - Implmenent speed system for animals traversing around board
 
-### Notes
+#### Notes
 
+- What acual generative ML model are we going to implement for all of these agents?
+    - Is there some pre-defined package we could already utilize that will run our simulation a given number of times?
 - Weather?
 - Reproducing:
     - Asexual: 1 food = survive, 2 food = reproduction

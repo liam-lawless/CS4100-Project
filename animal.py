@@ -14,7 +14,7 @@ class Animal:
         self.energy = energy
 
         # Mutation parameters
-        self.mutation_probability = 0.25     # the probability of a trait mutating
+        self.mutation_probability = 0.1     # the probability of a trait mutating
         self.mutation_amount = 1.0         # the amount a trait can possibly mutate +/-
         
 
@@ -78,6 +78,10 @@ class Animal:
 
     def death(self):
         # Implement death logic, e.g., based on energy depletion, environmental factors, etc.
+        pass
+
+    def reproduce(self):
+        # Implement logic for reproducing given each animal is asexual in nature
         pass
 
 # Examples & other stuff

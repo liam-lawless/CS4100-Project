@@ -4,9 +4,6 @@ import random
 from animal import Animal
 from pos import pos
 
-class VirtualAnimal:
-    def __init__(self, x, y):
-        self.position = (x, y)
 def getMovement(coords, dimensions):
     #topleft coords
     x1 = coords[0]
