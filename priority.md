@@ -1,6 +1,7 @@
 ## Priority List
 *What needs to be accomplished next?*
 
+**TODO**
 1. Set up a controller (main.py)
 2. Implement game tick system that allows animals to move (set up in controller), add tick to animal class
 
