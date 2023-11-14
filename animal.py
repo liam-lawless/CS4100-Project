@@ -15,22 +15,22 @@ class Animal:
 
         # Mutation parameters
         self.mutation_probability = 0.1     # the probability of a trait mutating
-        self.mutation_amount = 1.0         # the amount a trait can possibly mutate +/-
+        self.mutation_amount = 1            # the amount a trait can possibly mutate +/-
         
 
     def mutate_trait(self, trait_value):
         if random.random() < self.mutation_probability:
-            mutation = random.uniform(-self.mutation_amount, self.mutation_amount)
+            mutation = random.randint(-self.mutation_amount, self.mutation_amount)
             return trait_value + mutation
         return trait_value
 
-    # ensure traits are all rounded to the nearest tenth
-    def inherit_traits(self, trait1, trait2, inheritance_method='random'):
-        if inheritance_method == 'random':
-            return random.uniform(min(trait1, trait2), max(trait1, trait2))
-        elif inheritance_method == 'average':
-            return ((trait1 + trait2) / 2)
-        # Add more inheritance methods as needed
+    # # ensure traits are all rounded to the nearest tenth
+    # def inherit_traits(self, trait1, trait2, inheritance_method='random'):
+    #     if inheritance_method == 'random':
+    #         return random.uniform(min(trait1, trait2), max(trait1, trait2))
+    #     elif inheritance_method == 'average':
+    #         return ((trait1 + trait2) / 2)
+    #     # Add more inheritance methods as needed
 
     def print_stats(self):
         print("Name: ", self.name)
@@ -41,6 +41,10 @@ class Animal:
         print("Reproduction rate: ", self.reproduction_rate)
         print("Energy: ", self.energy)
 
+    def move(self):
+        # Implement logic to move 1 tile around
+        pass
+
     def explore(self):
         # Implement explore logic
         pass
@@ -48,26 +52,22 @@ class Animal:
     def go_to_food(self):
         # Implement go_to_food logic
         pass
-
-    def search_for_mate(self):
-        # Implement search_for_mate logic
-        pass
     
     # one thing we have to be careful about is not allowing each individual to mate, which would each spawn an offspring
     # how can we make it such that only one offspring is spawned from each mating interaction
-    def mate(self, partner, inheritence_method="random"):
-        size = round(self.mutate_trait(self.inherit_traits(self.size, partner.size, inheritence_method)), 1)
-        speed = round(self.mutate_trait(self.inherit_traits(self.speed, partner.speed, inheritence_method)), 1)
-        vision = round(self.mutate_trait(self.inherit_traits(self.vision, partner.vision, inheritence_method)), 1)
-        strength = round(self.mutate_trait(self.inherit_traits(self.strength, partner.strength, inheritence_method)), 1)
+    # def mate(self, partner, inheritence_method="random"):
+    #     size = round(self.mutate_trait(self.inherit_traits(self.size, partner.size, inheritence_method)), 1)
+    #     speed = round(self.mutate_trait(self.inherit_traits(self.speed, partner.speed, inheritence_method)), 1)
+    #     vision = round(self.mutate_trait(self.inherit_traits(self.vision, partner.vision, inheritence_method)), 1)
+    #     strength = round(self.mutate_trait(self.inherit_traits(self.strength, partner.strength, inheritence_method)), 1)
 
-        return Animal(name=random_name(), position= self.position, size=size, speed=speed, vision=vision, strength=strength,
-                       reproduction_rate=0.2, energy=50)
+    #     return Animal(name=random_name(), position= self.position, size=size, speed=speed, vision=vision, strength=strength,
+    #                    reproduction_rate=0.2, energy=50)
 
     def eat(self):
         # Implement eat logic
         pass
-
+    
     def rest(self):
         # Implement rest logic
         pass
@@ -82,7 +82,16 @@ class Animal:
 
     def reproduce(self):
         # Implement logic for reproducing given each animal is asexual in nature
-        pass
+        size = self.mutate_trait(self.size)
+        speed = self.mutate_trait(self.speed)
+        vision = self.mutate_trait(self.vision)
+        strength = self.mutate_trait(self.strength)
+
+        # the new animal would probably be reproduced for the next generation, so we need to figur out what position to assign
+        # it. Might need to assign like a "default position" and then at the start of each generation, randomize the position of
+        # all the agents at the start of each round
+        return Animal(name=random_name(), position= self.position, size=size, speed=speed, vision=vision, strength=strength,
+                    reproduction_rate=0.2, energy=50)
 
 # Examples & other stuff
 c1 = pos(0,0)
@@ -92,19 +101,19 @@ animal2 = Animal(name="Animal2", position = c1, size=12, speed=10, vision=7, str
 # Mutation example
 mutated_size = animal1.mutate_trait(animal1.size)
 
-# Inheritence example
-animal3 = animal1.mate(animal2)
+# Inheritence example (offspring of animal1)
+animal3 = animal1.reproduce()
 animal3.print_stats()
 
-# Checking how often a child has a trait value greater or less than that of their parents
-if animal3.size < 10 or animal3.size > 12:
+# Checking how often a child has a trait value greater or less than that of their parent
+if animal3.size != 10:
     print("SIZE OUTLIER")
 
-if animal3.speed < 5 or animal3.speed > 10:
+if animal3.speed != 5:
     print("SPEED OUTLIER")
 
-if animal3.vision < 7 or animal3.vision > 8:
+if animal3.vision != 8:
     print("VISION OUTLIER")
 
-if animal3.strength < 6 or animal3.strength > 7:
+if animal3.strength != 7:
     print("STRENGTH OUTLIER")

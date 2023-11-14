@@ -6,6 +6,9 @@ class pos:
     def __repr__(self):
         return f"Coordinate(x={self.x}, y={self.y})"
 
+    def tup(self):
+        return (self.x, self.y)
+
     def distance_to(self, other_coordinate):
         """
         Calculate the Euclidean distance between two coordinates.
