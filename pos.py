@@ -1,3 +1,5 @@
+import random
+
 class pos:
     def __init__(self, x, y):
         self.x = x
@@ -14,6 +16,9 @@ class pos:
         Calculate the Euclidean distance between two coordinates.
         """
         return ((self.x - other_coordinate.x) ** 2 + (self.y - other_coordinate.y) ** 2) ** 0.5
+    
+    def random_pos(self, width, height):
+        return pos(random.randint(0, width), random.randint(0, height))
 
 # # Example usage:
 # coord1 = Coordinate(0, 0)
