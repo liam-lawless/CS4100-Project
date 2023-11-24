@@ -8,12 +8,8 @@ Description:
     This file contains the SimulationView class, which handles all the graphical representations of the simulation on the Tkinter canvas.
 
 Dependencies:
-    - agent.py: Defines the Agent class with its properties and behaviors.
-    - random
+
 """
-
-
-import tkinter as tk
 
 class SimulationView:
     def __init__(self, canvas, environment):

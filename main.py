@@ -2,7 +2,7 @@
 File name: main.py
 Author(s): Liam Lawless
 Date created: November 22, 2023
-Last modified: November 23, 2023
+Last modified: November 24, 2023
 
 Description:
     This script serves as the entry point for the natural selection simulation. It sets up the environment, initializes the simulation agents and food sources, and starts the main application loop.
@@ -26,12 +26,12 @@ from simulation_view import SimulationView
 
 # Configuration Constants
 BOUNDS = (400, 400)
-NUM_AGENTS = 5
+NUM_AGENTS = 3
 START_SIZE = 10
 VARIABILITY = 2
 FOOD_AMOUNT = 15
 MAX_TICKS = 1000
-TICK_RATE = 100  # Milliseconds between ticks
+TICK_RATE = 10  # Milliseconds between ticks
 
 # Function Definitions
 def generate_edge_position(bounds):
@@ -41,10 +41,14 @@ def generate_edge_position(bounds):
     )
 
 def generate_food_position(bounds, food, food_amount):
+    # Keeps food from spawning too close to the edge
+    x_min_bound = int(bounds[0] * 0.1)
+    y_min_bound = int(bounds[1] * 0.1)
+
     while len(food) < food_amount:
         new_position = Pos(
-            random.randint(50, bounds[0]-50),
-            random.randint(50, bounds[1]-50)
+            random.randint(x_min_bound, bounds[0]-x_min_bound),
+            random.randint(y_min_bound, bounds[1]-y_min_bound)
         )
         if all(new_position != f.position for f in food):
             food.append(Food(new_position, 50))
