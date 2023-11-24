@@ -1,9 +1,13 @@
 import random
 from utils import random_name
-from pos import pos
+from pos import Pos
 
 class Agent:
-    def __init__(self, position, size, speed, vision, strength):
+    DEFAULT_ENERGY = 100
+    MUTATION_PROBABILITY = 0.1
+    MUTATION_AMOUNT = 1
+
+    def __init__(self, position, size, speed, vision, strength, bounds):
         # (X, Y) position represented by pos class
         self.position = position
 
@@ -13,18 +17,21 @@ class Agent:
         self.vision = vision
         self.strength = strength # enough strength strength to survive n amount of attacks, might have to be cut based on how much time we have
 
-        self.energy = 50    # default 50 (for now)
-        self.mutation_probability = 0.1
-        self.mutation_amount = 1
+        self.energy = Agent.DEFAULT_ENERGY
 
+        # bounds of the environment represented as a tuple (max_X, max_Y)
+        # we can always assume that the min canvas bounds are (0, 0)
+        self.bounds = bounds
+
+        self.food_consumed = 0
 
     def mutate_trait(self, trait_value):
-        if random.random() < self.mutation_probability:
+        if random.random() < Agent.MUTATION_PROBABILITY:
             mutation = 0
             # ensures that a mutation amount of 0 can not be selected
             # prevents genes from not mutating even if they were selected to mutate
             while mutation == 0:
-                mutation = random.randint(-self.mutation_amount, self.mutation_amount)
+                mutation = random.randint(-Agent.MUTATION_AMOUNT, Agent.MUTATION_AMOUNT)
                 result = trait_value + mutation
                 # prevents returning negative value traits (always mutates up if at 0)
                 if result < 0:
@@ -32,7 +39,6 @@ class Agent:
         
             return trait_value + mutation
     
-
     def print_stats(self):
         print("Size: ", self.size)
         print("Speed: ", self.speed)
@@ -40,9 +46,16 @@ class Agent:
         print("Strength: ", self.strength)
         print("Energy: ", self.energy)
 
+    def perform_action(self):
+        # just have agents move at the moment (randomly)
+        self.move()
+
+    # move agent to the specified x, y position
     def move(self):
-        # Implement logic to move 1 tile around
-        pass
+        if self.energy > 0:
+            self.energy -= 1  # Deduct energy for movement
+            self.position.x = random.randint(0, self.bounds[0])
+            self.position.y = random.randint(0, self.bounds[1])
 
     def explore(self):
         # Implement explore logic
@@ -52,9 +65,8 @@ class Agent:
         # Implement go_to_food logic
         pass
 
-    def eat(self):
-        # Implement eat logic
-        pass
+    def consume_food(self):
+        self.food_consumed += 1
     
     def rest(self):
         # Implement rest logic
@@ -78,30 +90,5 @@ class Agent:
 
         return Agent(position= self.position, size=size, speed=speed, vision=vision, strength=strength)
     
-    def reset_energy(self, default=50):
-        self.energy = default
-
-# Examples & other stuff
-# c1 = pos(0,0)
-# animal1 = Agent(position = c1, size=10, speed=0, vision=8, strength=7)
-# animal2 = Agent(position = c1, size=12, speed=10, vision=7, strength=6)
-
-# # Mutation example
-# mutated_size = animal1.mutate_trait(animal1.size)
-
-# # Inheritence example (offspring of animal1)
-# animal3 = animal1.reproduce()
-# animal3.print_stats()
-
-# # Checking how often a child has a trait value greater or less than that of their parent
-# if animal3.size != 10:
-#     print("SIZE OUTLIER")
-
-# if animal3.speed != 5:
-#     print("SPEED OUTLIER")
-
-# if animal3.vision != 8:
-#     print("VISION OUTLIER")
-
-# if animal3.strength != 7:
-#     print("STRENGTH OUTLIER")
+    def reset_energy(self):
+        self.energy = Agent.DEFAULT_ENERGY

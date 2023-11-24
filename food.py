@@ -1,5 +1,3 @@
-from pos import pos
-
 class Food:
     def __init__(self, position, energy=50):
         self.position = position

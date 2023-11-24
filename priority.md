@@ -2,8 +2,8 @@
 *What needs to be accomplished next?*
 
 **TODO**
-1. Set up a controller (main.py)
-2. Implement game tick system that allows animals to move (set up in controller), add tick to animal class
+1. Set up a controller (main.py) **WIP**
+2. Implement game tick system that allows animals to move (set up in controller), add tick to animal class **WIP**
 
 Needs to happen in no apparent order:
 - Implement food items (file and class structure {pos, energy_amount}) **WIP**
@@ -14,10 +14,10 @@ Needs to happen in no apparent order:
 #### Notes
 
 - What acual generative ML model are we going to implement for all of these agents?
-    - Is there some pre-defined package we could already utilize that will run our simulation a given number of times?
-- Weather?
+    - Is there some pre-defined package we could already utilize that will run our simulation a given number of times? Qlearning & pytorch
+- Weather? Probs not
 - Reproducing:
-    - Asexual: 1 food = survive, 2 food = reproduction
+    - Asexual: 1 food = survive, 2 food = reproduction 
     - CANCELLED Sexual: 2 mates, offspring inherits combination of traits from each parent
 - Array mapped to the board size
 - speed is a measurement of how many ticks have to pass before an animal can move again
