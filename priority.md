@@ -2,14 +2,13 @@
 *What needs to be accomplished next?*
 
 **TODO**
-1. Set up a controller (main.py) **WIP**
-2. Implement game tick system that allows animals to move (set up in controller), add tick to animal class **WIP**
+- Implmenent speed system for animals traversing around board
+- Implement agent thought process
+    - agents going from moving in a calculated manner to searching for food
+
 
 Needs to happen in no apparent order:
-- Implement food items (file and class structure {pos, energy_amount}) **WIP**
-- Change to asexual reproduction for offspring (makes the project much easier long term) **DONE**
-- Switch trait mutation from floats to int & mutation either by +1 or -1, no floats **DONE**
-- Implmenent speed system for animals traversing around board
+
 
 #### Notes
 
