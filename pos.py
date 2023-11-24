@@ -1,4 +1,15 @@
-import random
+"""
+File name: pos.py
+Author(s): Liam Lawless
+Date created: November 10, 2023
+Last modified: November 23, 2023
+
+Description:
+    This file provides the Pos class, which defines a position with x and y coordinates and supports distance calculations.
+
+Dependencies:
+
+"""
 
 class Pos:
     def __init__(self, x, y):

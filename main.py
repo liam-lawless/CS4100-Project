@@ -1,17 +1,46 @@
+"""
+File name: main.py
+Author(s): Liam Lawless
+Date created: November 22, 2023
+Last modified: November 23, 2023
+
+Description:
+    This script serves as the entry point for the natural selection simulation. It sets up the environment, initializes the simulation agents and food sources, and starts the main application loop.
+
+Dependencies:
+    - agent.py: Defines the Agent class with its properties and behaviors.
+    - environment.py: Manages the simulation environment and its state.
+    - pos.py: Provides a class for X, Y coordinate representation.
+    - food.py: Defines the Food class used in the simulation.
+    - simulation_view.py: Handles the visual representation of the simulation.
+    - tkinter: Provides GUI components for the simulation.
+"""
+
 import tkinter as tk
 import random
 from agent import Agent
 from environment import Environment
 from pos import Pos
 from food import Food
+from simulation_view import SimulationView
 
+# Configuration Constants
+BOUNDS = (400, 400)
+NUM_AGENTS = 5
+START_SIZE = 10
+VARIABILITY = 2
+FOOD_AMOUNT = 15
+MAX_TICKS = 1000
+TICK_RATE = 100  # Milliseconds between ticks
+
+# Function Definitions
 def generate_edge_position(bounds):
     return Pos(
         random.choice([0, bounds[0]]),
         random.randint(0, bounds[1])
     )
 
-def generate_food_position(bounds, food):
+def generate_food_position(bounds, food, food_amount):
     while len(food) < food_amount:
         new_position = Pos(
             random.randint(50, bounds[0]-50),
@@ -24,73 +53,48 @@ def game_tick():
     global gameTick
     gameTick += 1
 
-    # Update the environment, which will update the positions of agents
     sim.update_environment()
+    view.update_view()
 
-    # Perform actions for each agent with energy
-    for agent in agents:
-        if agent.energy > 0:
-            agent.perform_action()
-        else:
-            # Handle the agent with no energy (e.g., remove from board, mark as dead)
-            pass
-
-    # Check for game end condition
     if gameTick < MAX_TICKS:
-        # Schedule the next tick
         root.after(TICK_RATE, game_tick)
     else:
         print("Simulation ended after reaching the maximum number of ticks")
 
-# Environment Variables
-bounds = (400, 400)
+# Main Execution
+if __name__ == "__main__":
+    # Initialize game variables
+    gameTick = 0
+    agents = []
+    food = []
 
-# Agent variables
-num_agents = 5  # How many agents to start the game with
-agents = []
-# temporary, need to figure out what the base stat value will be
-start_size = 10  # starting value for each trait
-variability = 2  # introduce slight variability in each trait
+    # Generate agents and food
+    for _ in range(NUM_AGENTS):
+        rand_pos = generate_edge_position(BOUNDS)
+        new_agent = Agent(
+            rand_pos,
+            random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
+            random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
+            random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
+            random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
+            BOUNDS
+        )
+        agents.append(new_agent)
 
-# Food variables
-food = []
-food_amount = 15
+    generate_food_position(BOUNDS, food, FOOD_AMOUNT)
 
-# Initialize gameTick before the game_tick function
-gameTick = 0
+    # Set up the GUI
+    root = tk.Tk()
+    root.title("Natural Selection Simulation")
+    canvas = tk.Canvas(root, width=BOUNDS[0], height=BOUNDS[1], bg='white')
+    canvas.pack()
 
-# Instantiate agents
-for _ in range(num_agents):
-    rand_pos = generate_edge_position(bounds)
-    new_agent = Agent(
-        rand_pos,
-        random.randint(start_size-variability, start_size+variability),
-        random.randint(start_size-variability, start_size+variability),
-        random.randint(start_size-variability, start_size+variability),
-        random.randint(start_size-variability, start_size+variability),
-        bounds
-    )
-    agents.append(new_agent)
+    # Initialize the Model (Environment) and the View (SimulationView)
+    sim = Environment(agents, food, BOUNDS)
+    view = SimulationView(canvas, sim)
 
-generate_food_position(bounds, food)
+    # Start the simulation loop
+    root.after(TICK_RATE, game_tick)
 
-# Create the main Tkinter window
-root = tk.Tk()
-
-# Create the simulation environment
-sim = Environment(root, agents, food, bounds)
-
-# Define the total number of ticks for the simulation
-MAX_TICKS = 1000
-
-# Milliseconds between ticks
-TICK_RATE = 100  # Example: 1000 ms = 1 second
-
-# Initialize the simulation
-sim.run()
-
-# Start the game tick process
-root.after(TICK_RATE, game_tick)
-
-# Start the Tkinter event loop
-root.mainloop()
+    # Start the Tkinter event loop
+    root.mainloop()
