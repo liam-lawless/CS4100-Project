@@ -20,10 +20,11 @@ import math
 from pos import Pos
 
 class Agent:
-    DEFAULT_ENERGY = 10000
-    MUTATION_PROBABILITY = 0.1
-    MUTATION_AMOUNT = 1
-    ENTITY_RADIUS = 5  # Size of the agent for collision detection
+    DEFAULT_ENERGY = 1000   # Amount of energy an agent has
+    MUTATION_PROBABILITY = 0.1  # Probability a trait will mutate on reproduction
+    MUTATION_AMOUNT = 1     # Amount a trait will mutate +/-
+    ENTITY_RADIUS = 5   # Size of the agent for collision detection
+    VISION_MULTIPLIER = 4   # Multiplier to determine the vision radius (tkinter units)
 
     def __init__(self, position, size, speed, vision, strength, bounds):
         self.position = position
@@ -53,8 +54,16 @@ class Agent:
         print("Strength: ", self.strength)
         print("Energy: ", self.energy)
 
-    def perform_action(self):
-        self.wander()
+    def perform_action(self, environment):
+        # Check if the agent has enough energy to act
+        if self.energy <= 0:
+            return  # Could also handle death or inactive state here
+
+        # Sense the environment and make decisions based on it
+        self.sense_environment(environment)
+        
+        # Additional actions can be added here based on the agent's state after sensing
+        # For example, handling eating if food is at the current position
 
     def move(self, delta_x=None, delta_y=None):
         if self.energy > 0:
@@ -93,7 +102,7 @@ class Agent:
             return
 
         # The maximum change in angle per move
-        max_angle_change = math.radians(15)  # 10 degrees for example
+        max_angle_change = math.radians(15)     # 15 degrees
 
         # Randomly change the heading by a small amount
         self.heading += random.uniform(-max_angle_change, max_angle_change)
@@ -117,3 +126,37 @@ class Agent:
 
         # Move the agent
         self.move(delta_x, delta_y)
+
+    def move_towards(self, target_position):
+        # Calculate the direction towards the target
+        direction_to_target = math.atan2(target_position.y - self.position.y, target_position.x - self.position.x)
+
+        # Set the heading towards the target
+        self.heading = direction_to_target
+        self.move(math.cos(self.heading), math.sin(self.heading))
+
+    def sense_environment(self, environment):
+        # Calculate the sensing radius based on the vision trait
+        vision_radius = self.vision * Agent.VISION_MULTIPLIER
+
+        # Detect all food within the sensing radius
+        food_in_sight = []
+        for food in environment.food:
+            if self.position.distance_to(food.position) <= vision_radius:
+                food_in_sight.append(food)
+
+        # Optionally, detect other agents within the sensing radius
+        # agents_in_sight = []
+        # for other_agent in environment.population:
+        #     if self is not other_agent and self.position.distance_to(other_agent.position) <= sensing_radius:
+        #         agents_in_sight.append(other_agent)
+
+        # Perform actions based on the sensed environment
+        # For example, move towards the closest food item
+        if food_in_sight:
+            closest_food = min(food_in_sight, key=lambda f: self.position.distance_to(f.position))
+            self.move_towards(closest_food.position)
+
+        # If no food is in sight, continue wandering
+        else:
+            self.wander()

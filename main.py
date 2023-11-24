@@ -26,11 +26,11 @@ from simulation_view import SimulationView
 
 # Configuration Constants
 BOUNDS = (400, 400)
-NUM_AGENTS = 3
+NUM_AGENTS = 10
 START_SIZE = 10
 VARIABILITY = 2
-FOOD_AMOUNT = 15
-MAX_TICKS = 1000
+FOOD_AMOUNT = 10
+MAX_TICKS = 2000
 TICK_RATE = 10  # Milliseconds between ticks
 
 # Function Definitions
@@ -51,7 +51,7 @@ def generate_food_position(bounds, food, food_amount):
             random.randint(y_min_bound, bounds[1]-y_min_bound)
         )
         if all(new_position != f.position for f in food):
-            food.append(Food(new_position, 50))
+            food.append(Food(new_position))
 
 def game_tick():
     global gameTick
