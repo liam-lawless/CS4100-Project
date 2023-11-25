@@ -15,7 +15,7 @@ from agent_sensing_view import AgentSensingView
 import math
 
 class SimulationView:
-    SHOW_SENSING = False
+    SHOW_SENSING = True
 
     def __init__(self, canvas, environment):
         self.canvas = canvas

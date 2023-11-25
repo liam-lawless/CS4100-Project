@@ -14,6 +14,7 @@ Dependencies:
 """
 
 from entity import Entity
+from pos import Pos
 import math
 import random
 
@@ -21,26 +22,35 @@ class Agent(Entity):
     DEFAULT_ENERGY = 12500  # Overriding the default energy level for agents
     MUTATION_PROBABILITY = 0.1  # Probability a trait will mutate on reproduction
     MUTATION_AMOUNT = 1     # Amount a trait will mutate +/-
+    GREEDY = False  # Agents will continue to eat after 2 food, do not need to return home
 
     def __init__(self, position, size, speed, vision, strength, bounds):
         super().__init__(position, size, speed, vision, bounds)
         self.energy = Agent.DEFAULT_ENERGY
         self.strength = strength
-        #self.food_consumed = 0
+        self.satisfied = False
+        self.at_edge = False
 
     def calculate_energy_cost(self):
         # Agents might have a different energy cost calculation
         return (self.speed ** 2) * (self.size ** 2) + self.vision + self.strength
     
     def perform_action(self, environment):
-        # Check if the agent has enough energy to act
-        if self.energy <= 0:
-            return  # Could also handle death or inactive state here
+        # If the agent is satisfied and at the edge, do nothing
+        if self.satisfied and self.at_edge:
+            return  # Agent does nothing
+        
+        # Check if the agent is satisfied and needs to return to the edge
+        self.check_satisfied()
+        if self.satisfied:
+            self.return_home()
+        else:
+            # Check if the agent has enough energy to act
+            if self.energy <= 0:
+                return  # Could also handle death or inactive state here
 
-        # Sense the environment and make decisions based on it
-        self.sense_environment(environment)
-
-        # Additional actions can be implemented here
+            # Sense the environment and make decisions based on it
+            self.sense_environment(environment)
     
     def sense_environment(self, environment):
         # Calculate the sensing radius based on the vision trait
@@ -84,6 +94,25 @@ class Agent(Entity):
         # Set the heading directly opposite the target
         self.heading = (direction_to_target + math.pi) % (2 * math.pi)
         self.move(math.cos(self.heading), math.sin(self.heading))
+
+    def check_satisfied(self):
+        # Check if the agent has eaten enough food
+        if self.consumed >= 2 and not Agent.GREEDY:
+            self.satisfied = True
+
+    def return_home(self):
+        # Determine the closest edge of the canvas to the agent's current position
+        edges = [Pos(0, self.position.y), Pos(self.bounds[0], self.position.y),
+                 Pos(self.position.x, 0), Pos(self.position.x, self.bounds[1])]
+        closest_edge = min(edges, key=lambda edge: self.position.distance_to(edge))
+        
+        # Check if the agent is already at the edge
+        if self.position.distance_to(closest_edge) < self.ENTITY_RADIUS:
+            self.at_edge = True
+            return
+        
+        # Move towards the edge if not there yet
+        self.move_towards(closest_edge)
 
     def reproduce(self):
         size = self.mutate_trait(self.size)

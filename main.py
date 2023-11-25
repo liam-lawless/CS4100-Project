@@ -28,13 +28,13 @@ from adversary import Adversary
 
 # Configuration Constants
 BOUNDS = (500, 500)
-NUM_AGENTS = 1
-NUM_ADVERSARIES = 10
+NUM_AGENTS = 3
+NUM_ADVERSARIES = 1
 FOOD_AMOUNT = 20
 START_SIZE = 10
 VARIABILITY = 2
 MAX_TICKS = 20000
-TICK_RATE = 20  # Milliseconds between ticks
+TICK_RATE = 10  # Milliseconds between ticks
 
 # Function Definitions
 def generate_edge_position(bounds):
@@ -82,7 +82,7 @@ if __name__ == "__main__":
         new_agent = Agent(
             rand_pos,
             round(random.uniform(1.0, 4.0), 1),   # size
-            round(random.uniform(1.0, 4.0), 1),   # speed
+            round(random.uniform(1.0, 2.5), 1),   # speed
             round(random.uniform(5.0, 10.0), 1),   # vision
             round(random.uniform(1.0, 4.0), 1),   # strength
             BOUNDS
