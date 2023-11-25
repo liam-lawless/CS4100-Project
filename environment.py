@@ -42,7 +42,7 @@ class Environment:
                 agent_size = agent.ENTITY_RADIUS + agent.size # Factor in agent size
 
                 if agent.position.distance_to(food_item.position) <= agent_size + food_item.ENTITY_RADIUS:
-                    agent.consume_food()
+                    agent.consume()
                     self.remove_food(food_item)
 
     def check_for_predation(self):
@@ -51,7 +51,8 @@ class Environment:
                 if adversary.position.distance_to(agent.position) <= adversary.ENTITY_RADIUS + agent.ENTITY_RADIUS:
                     # Handle the agent being eaten by the adversary
                     self.remove_agent(agent)
-                    adversary.eat()
+                    adversary.consume()
+                    adversary.cooldown = 100
 
     def remove_food(self, food_item):
         self.food.remove(food_item)

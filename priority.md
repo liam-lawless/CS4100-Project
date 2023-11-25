@@ -2,14 +2,17 @@
 *What needs to be accomplished next?*
 
 **TODO**
+- ~~Abstract adversary and agent classes, extract commonalities/methods or make an abstract class that they both extend from. Many similar methods~~
 - Implement adversaries
+    - Adversary needs to eat N amount of agents per day to survive, otherwise dies.
 - Implement QLearning
 - Implement more actions
-    - flee
+    - ~~flee~~
     - return home
     - die of old age
     - sated (or should it be kept as greedy i.e. agents eat as much as they want)
-    - reproduce 
+    - reproduce
+    - big agents eat little agents? 
 - Implement generations
 - Implement graphs and visualizations
 - Document code

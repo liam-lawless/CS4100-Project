@@ -2,7 +2,7 @@
 File name: simulation_view.py
 Author(s): Liam Lawless
 Date created: November 23, 2023
-Last modified: November 24, 2023
+Last modified: November 25, 2023
 
 Description:
     This file contains the SimulationView class, which handles all the graphical representations of the simulation on the Tkinter canvas.
@@ -15,7 +15,7 @@ from agent_sensing_view import AgentSensingView
 import math
 
 class SimulationView:
-    SHOW_SENSING = True
+    SHOW_SENSING = False
 
     def __init__(self, canvas, environment):
         self.canvas = canvas
@@ -43,13 +43,13 @@ class SimulationView:
             # Agent's center position
             x, y = agent.position.x, agent.position.y
 
-            # Factor agent size
-            agent_size = agent.ENTITY_RADIUS + agent.size
+            # Factor agent size (Agent should be drawn with radius of 5 at smallest size)
+            agent_size = (agent.ENTITY_RADIUS - 1) + agent.size
 
             # If sensing, draw the vision radius first
             if SimulationView.SHOW_SENSING:
                 # Calculate the top-left corner of the sensing radius
-                sensing_radius = agent.vision * agent.VISION_MULTIPLIER
+                sensing_radius = agent.vision * agent.VISION_RANGE_MULTIPLIER
                 top_left_x = x - sensing_radius
                 top_left_y = y - sensing_radius
 
