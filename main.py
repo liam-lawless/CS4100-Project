@@ -28,12 +28,12 @@ from adversary import Adversary
 
 # Configuration Constants
 BOUNDS = (500, 500)
-NUM_AGENTS = 10
+NUM_AGENTS = 5
 NUM_ADVERSARIES = 1
 FOOD_AMOUNT = 20
 START_SIZE = 10
 VARIABILITY = 2
-MAX_TICKS = 15000
+MAX_TICKS = 20000
 TICK_RATE = 10  # Milliseconds between ticks
 
 # Function Definitions
@@ -95,7 +95,7 @@ if __name__ == "__main__":
             random.randint((BOUNDS[0]/2)-10, (BOUNDS[0]/2)+10),
             random.randint((BOUNDS[1]/2)-10, (BOUNDS[1]/2)+10),
         )
-        new_adversary = Adversary(rand_pos, 2.0, BOUNDS)
+        new_adversary = Adversary(rand_pos, BOUNDS)
         adversaries.append(new_adversary)
 
     generate_food_position(BOUNDS, food, FOOD_AMOUNT)

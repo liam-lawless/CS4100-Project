@@ -86,7 +86,7 @@ class Agent:
         # Define the cost of an agent moving given its traits
         #energy_cost = int((self.speed + self.size + self.strength) ** 1.5)
         # come back to this later to figure out a better cost function
-        energy_cost = (self.speed ** 2) * (self.size ** 3) + self.vision + self.strength
+        energy_cost = (self.speed ** 2) * (self.size ** 2) + self.vision + self.strength
         
         # Deduct energy based on the speed, e.g., energy -= speed^2
         self.energy -= energy_cost
@@ -145,9 +145,9 @@ class Agent:
     def flee(self, target_position):
         # Calculate the direction towards the target
         direction_to_target = math.atan2(target_position.y - self.position.y, target_position.x - self.position.x)
-
-        # Set the heading towards the target
-        self.heading = -direction_to_target
+        
+        # Set the heading directly opposite the target
+        self.heading = (direction_to_target + math.pi) % (2 * math.pi)
         self.move(math.cos(self.heading), math.sin(self.heading))
 
     def sense_environment(self, environment):

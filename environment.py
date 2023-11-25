@@ -29,7 +29,9 @@ class Environment:
 
         # Update adversaries
         for adversary in self.adversaries:
-            adversary.seek_agents(self.population)
+            adversary.update()  # Decrease cooldown and recover energy if resting
+            if adversary.energy > 0 and adversary.cooldown == 0:
+                adversary.seek_agents(self.population)
 
         # Check for agent-adversary collisions
         self.check_for_predation()
@@ -49,6 +51,7 @@ class Environment:
                 if adversary.position.distance_to(agent.position) <= adversary.ENTITY_RADIUS + agent.ENTITY_RADIUS:
                     # Handle the agent being eaten by the adversary
                     self.remove_agent(agent)
+                    adversary.eat()
 
     def remove_food(self, food_item):
         self.food.remove(food_item)

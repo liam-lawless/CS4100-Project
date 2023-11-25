@@ -11,7 +11,6 @@ Dependencies:
 
 """
 
-from adversary import Adversary
 from agent_sensing_view import AgentSensingView
 import math
 
@@ -85,7 +84,7 @@ class SimulationView:
             shape = self.canvas.create_oval(
                 x - food_item.ENTITY_RADIUS, y - food_item.ENTITY_RADIUS,
                 x + food_item.ENTITY_RADIUS, y + food_item.ENTITY_RADIUS,
-                fill='green',
+                fill= 'green',
                 outline=''
             )
             self.food_shapes[food_item] = shape
@@ -98,11 +97,11 @@ class SimulationView:
 
         for adversary in self.environment.adversaries:
             shape = self.canvas.create_oval(
-                adversary.position.x - Adversary.ENTITY_RADIUS,
-                adversary.position.y - Adversary.ENTITY_RADIUS,
-                adversary.position.x + Adversary.ENTITY_RADIUS,
-                adversary.position.y + Adversary.ENTITY_RADIUS,
-                fill=Adversary.COLOR,
+                adversary.position.x - adversary.ENTITY_RADIUS,
+                adversary.position.y - adversary.ENTITY_RADIUS,
+                adversary.position.x + adversary.ENTITY_RADIUS,
+                adversary.position.y + adversary.ENTITY_RADIUS,
+                fill='red',
                 outline=''
             )
             self.adversary_shapes[adversary] = shape
