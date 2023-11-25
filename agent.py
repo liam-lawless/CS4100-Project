@@ -142,6 +142,14 @@ class Agent:
         self.heading = direction_to_target
         self.move(math.cos(self.heading), math.sin(self.heading))
 
+    def flee(self, target_position):
+        # Calculate the direction towards the target
+        direction_to_target = math.atan2(target_position.y - self.position.y, target_position.x - self.position.x)
+
+        # Set the heading towards the target
+        self.heading = -direction_to_target
+        self.move(math.cos(self.heading), math.sin(self.heading))
+
     def sense_environment(self, environment):
         # Calculate the sensing radius based on the vision trait
         vision_radius = self.vision * Agent.VISION_MULTIPLIER
@@ -152,15 +160,24 @@ class Agent:
             if self.position.distance_to(food.position) <= vision_radius:
                 food_in_sight.append(food)
 
+        # Detect all adversaries within the sensing radius
+        adversary_in_sight = []
+        for adversary in environment.adversaries:
+            if self is not adversary and self.position.distance_to(adversary.position) <= vision_radius:
+                adversary_in_sight.append(adversary)
+
         # Optionally, detect other agents within the sensing radius
         # agents_in_sight = []
         # for other_agent in environment.population:
-        #     if self is not other_agent and self.position.distance_to(other_agent.position) <= sensing_radius:
+        #     if self is not other_agent and self.position.distance_to(other_agent.position) <= vision_radius:
         #         agents_in_sight.append(other_agent)
 
         # Perform actions based on the sensed environment
         # For example, move towards the closest food item
-        if food_in_sight:
+        if adversary_in_sight:
+            closest_adversary = min(adversary_in_sight, key=lambda f: self.position.distance_to(f.position))
+            self.flee(closest_adversary.position)
+        elif food_in_sight:
             closest_food = min(food_in_sight, key=lambda f: self.position.distance_to(f.position))
             self.move_towards(closest_food.position)
 

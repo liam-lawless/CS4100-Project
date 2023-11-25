@@ -2,7 +2,7 @@
 File name: main.py
 Author(s): Liam Lawless
 Date created: November 22, 2023
-Last modified: November 24, 2023
+Last modified: November 25, 2023
 
 Description:
     This script serves as the entry point for the natural selection simulation. It sets up the environment, initializes the simulation agents and food sources, and starts the main application loop.

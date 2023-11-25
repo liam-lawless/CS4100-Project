@@ -2,7 +2,7 @@
 File name: environment.py
 Author(s): Liam Lawless
 Date created: November 13, 2023
-Last modified: November 24, 2023
+Last modified: November 25, 2023
 
 Description:
     The environment.py file defines the Environment class, which manages the simulation space, orchestrates agent interactions, and maintains the overall state of the natural selection simulation.
