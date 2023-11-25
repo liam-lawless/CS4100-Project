@@ -20,17 +20,19 @@ Dependencies:
 import tkinter as tk
 import random
 from agent import Agent
-from environment import Environment
 from pos import Pos
 from food import Food
 from simulation_view import SimulationView
+from environment import Environment
+from adversary import Adversary
 
 # Configuration Constants
 BOUNDS = (500, 500)
 NUM_AGENTS = 10
+NUM_ADVERSARIES = 1
+FOOD_AMOUNT = 20
 START_SIZE = 10
 VARIABILITY = 2
-FOOD_AMOUNT = 20
 MAX_TICKS = 15000
 TICK_RATE = 10  # Milliseconds between ticks
 
@@ -72,19 +74,29 @@ if __name__ == "__main__":
     gameTick = 0
     agents = []
     food = []
+    adversaries = []
 
-    # Generate agents and food
+    # Generate agents, adversaries, and food
     for _ in range(NUM_AGENTS):
         rand_pos = generate_edge_position(BOUNDS)
         new_agent = Agent(
             rand_pos,
             round(random.uniform(1.0, 4.0), 1),   # size
-            round(random.uniform(1.0, 2.0), 1),   # speed
-            random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
-            random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
+            round(random.uniform(1.0, 4.0), 1),   # speed
+            round(random.uniform(5.0, 10.0), 1),   # vision
+            round(random.uniform(1.0, 4.0), 1),   # strength
             BOUNDS
         )
         agents.append(new_agent)
+
+    for _ in range(NUM_ADVERSARIES):
+        # Generate a random pos near the middle of the canvas
+        rand_pos = Pos(
+            random.randint((BOUNDS[0]/2)-10, (BOUNDS[0]/2)+10),
+            random.randint((BOUNDS[1]/2)-10, (BOUNDS[1]/2)+10),
+        )
+        new_adversary = Adversary(rand_pos, 2.0, BOUNDS)
+        adversaries.append(new_adversary)
 
     generate_food_position(BOUNDS, food, FOOD_AMOUNT)
 
@@ -95,7 +107,7 @@ if __name__ == "__main__":
     canvas.pack()
 
     # Initialize the Model (Environment) and the View (SimulationView)
-    sim = Environment(agents, food, BOUNDS)
+    sim = Environment(agents, adversaries,food, BOUNDS)
     view = SimulationView(canvas, sim)
 
     # Start the simulation loop

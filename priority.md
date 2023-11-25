@@ -16,8 +16,10 @@
 - Unit Test
 - Unrelated to code base, create powerpoint presentation for project
 
-
 Needs to happen eventually in no apparent order:
 - Circle back to the cost function to determine how much energy is used per step
+
+Bonus:
+- Implement clicking on an agent and getting its stats relayed back to the user
 
 #### Notes

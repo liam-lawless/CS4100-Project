@@ -11,6 +11,7 @@ Dependencies:
 
 """
 
+from adversary import Adversary
 from agent_sensing_view import AgentSensingView
 import math
 
@@ -22,14 +23,16 @@ class SimulationView:
         self.environment = environment
         self.agent_shapes = {}  # Maps agents to their canvas shapes
         self.food_shapes = {}   # Maps Food objects to their canvas shapes
+        self.adversary_shapes = {}  # Maps adversaries to their canvas shapes
         self.sensing_view = AgentSensingView(canvas)  # Instantiate once for reusability
 
     def draw_initial_state(self):
         self.draw_agents()
         self.draw_food()
+        self.draw_adversaries()
 
     def draw_agents(self):
-        # Clear existing shapes from the canvas
+        # Clear existing agents from the canvas
         for shape in self.agent_shapes.values():
             self.canvas.delete(shape)
         self.agent_shapes.clear()
@@ -57,7 +60,7 @@ class SimulationView:
                 # Draw the sensing radius centered on the agent
                 self.sensing_view.create_sensing_radius(
                     int(top_left_x), int(top_left_y),
-                    sensing_radius * 2, sensing_radius * 2,  # width and height
+                    int(sensing_radius * 2), int(sensing_radius * 2),  # width and height
                     heading_angle=30,  # Fixed arc angle for the heading indicator
                     body_fill="blue", heading_fill="green",
                     body_alpha=0.25, heading_alpha=0.4, start_angle=heading_degrees
@@ -87,6 +90,24 @@ class SimulationView:
             )
             self.food_shapes[food_item] = shape
 
+    def draw_adversaries(self):
+        # Clear existing adversaries from the canvas
+        for shape in self.adversary_shapes.values():
+            self.canvas.delete(shape)
+        self.adversary_shapes.clear()
+
+        for adversary in self.environment.adversaries:
+            shape = self.canvas.create_oval(
+                adversary.position.x - Adversary.ENTITY_RADIUS,
+                adversary.position.y - Adversary.ENTITY_RADIUS,
+                adversary.position.x + Adversary.ENTITY_RADIUS,
+                adversary.position.y + Adversary.ENTITY_RADIUS,
+                fill=Adversary.COLOR,
+                outline=''
+            )
+            self.adversary_shapes[adversary] = shape
+
     def update_view(self):
         self.draw_agents()
         self.draw_food()
+        self.draw_adversaries()

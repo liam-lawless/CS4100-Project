@@ -5,17 +5,15 @@ Date created: November 10, 2023
 Last modified: November 24, 2023
 
 Description:
-    The Agent class encapsulates the attributes and behaviors of agents in a natural selection simulation. It handles their movement, interaction with food, energy levels, and reproduction, simulating evolutionary processes.
+    The Agent class encapsulates the attributes and behaviors of prey in a natural selection simulation. It handles their movement, interaction with food, energy levels, and reproduction, simulating evolutionary processes.
 
 Dependencies:
     - random
-    - numpy
     - math
     - pos
 """
 
 import random
-import numpy as np
 import math
 from pos import Pos
 
