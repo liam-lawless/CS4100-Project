@@ -15,7 +15,7 @@ from agent_sensing_view import AgentSensingView
 import math
 
 class SimulationView:
-    SHOW_SENSING = False
+    SHOW_SENSING = True
 
     def __init__(self, canvas, environment):
         self.canvas = canvas
@@ -44,15 +44,7 @@ class SimulationView:
             # Factor agent size
             agent_size = agent.ENTITY_RADIUS + agent.size
 
-            # Draw the agent
-            agent_shape = self.canvas.create_oval(
-                x - agent_size, y - agent_size,
-                x + agent_size, y + agent_size,
-                fill='blue',
-                outline=''
-            )
-            self.agent_shapes[agent] = agent_shape
-
+            # If sensing, draw the vision radius first
             if SimulationView.SHOW_SENSING:
                 # Calculate the top-left corner of the sensing radius
                 sensing_radius = agent.vision * agent.VISION_MULTIPLIER
@@ -70,6 +62,15 @@ class SimulationView:
                     body_fill="blue", heading_fill="green",
                     body_alpha=0.25, heading_alpha=0.4, start_angle=heading_degrees
                 )
+
+            # Draw the agent on top of the radius if necessary
+            agent_shape = self.canvas.create_oval(
+                x - agent_size, y - agent_size,
+                x + agent_size, y + agent_size,
+                fill='blue',
+                outline=''
+            )
+            self.agent_shapes[agent] = agent_shape
 
     def draw_food(self):
         for shape in self.food_shapes.values():

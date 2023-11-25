@@ -26,12 +26,12 @@ from food import Food
 from simulation_view import SimulationView
 
 # Configuration Constants
-BOUNDS = (400, 400)
-NUM_AGENTS = 3
+BOUNDS = (500, 500)
+NUM_AGENTS = 10
 START_SIZE = 10
 VARIABILITY = 2
 FOOD_AMOUNT = 20
-MAX_TICKS = 2000
+MAX_TICKS = 15000
 TICK_RATE = 10  # Milliseconds between ticks
 
 # Function Definitions
@@ -78,8 +78,8 @@ if __name__ == "__main__":
         rand_pos = generate_edge_position(BOUNDS)
         new_agent = Agent(
             rand_pos,
-            random.randint(0,2),
-            random.randint(1,4),
+            round(random.uniform(1.0, 4.0), 1),   # size
+            round(random.uniform(1.0, 2.0), 1),   # speed
             random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
             random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
             BOUNDS

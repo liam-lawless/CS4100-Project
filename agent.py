@@ -20,10 +20,10 @@ import math
 from pos import Pos
 
 class Agent:
-    DEFAULT_ENERGY = 1000   # Amount of energy an agent has
+    DEFAULT_ENERGY = 12500   # Amount of energy an agent has
     MUTATION_PROBABILITY = 0.1  # Probability a trait will mutate on reproduction
     MUTATION_AMOUNT = 1     # Amount a trait will mutate +/-
-    ENTITY_RADIUS = 5   # Size of the agent for collision detection
+    ENTITY_RADIUS = 4   # Size of the agent for collision detection
     VISION_MULTIPLIER = 4   # Multiplier to determine the vision radius (tkinter units)
 
     def __init__(self, position, size, speed, vision, strength, bounds):
@@ -42,12 +42,14 @@ class Agent:
 
     def mutate_trait(self, trait_value):
         if random.random() < Agent.MUTATION_PROBABILITY:
-            mutation = random.choice([i for i in range(-Agent.MUTATION_AMOUNT, Agent.MUTATION_AMOUNT + 1) if i != 0])
-            result = trait_value + mutation
-            return max(result, 0)  # Ensure we don't get negative traits
+            #mutation = random.choice([i for i in range(-Agent.MUTATION_AMOUNT, Agent.MUTATION_AMOUNT + 1) if i != 0])
+            mutation = random.uniform(-Agent.MUTATION_AMOUNT, Agent.MUTATION_AMOUNT)
+            result = round(trait_value + mutation, 1) # Avoid float inaccuracies 
+            return max(result, 0.1)  # Ensure we don't get negative or 0 value traits
         return trait_value
 
     def print_stats(self):
+        print(self)     # Helps identify  agents when testing with small amounts
         print("Size: ", self.size)
         print("Speed: ", self.speed)
         print("Vision: ", self.vision)
@@ -83,8 +85,13 @@ class Agent:
         self.position.x = max(0, min(self.position.x + delta_x, self.bounds[0]))
         self.position.y = max(0, min(self.position.y + delta_y, self.bounds[1]))
 
+        # Define the cost of an agent moving given its traits
+        #energy_cost = int((self.speed + self.size + self.strength) ** 1.5)
+        # come back to this later to figure out a better cost function
+        energy_cost = (self.speed ** 2) * (self.size ** 3) + self.vision + self.strength
+        
         # Deduct energy based on the speed, e.g., energy -= speed^2
-        self.energy -= (self.speed ** 2) * (self.size ** 2)
+        self.energy -= energy_cost
 
     def consume_food(self):
         self.food_consumed += 1
