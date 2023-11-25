@@ -14,6 +14,7 @@ Dependencies:
     - food.py: Defines the Food class used in the simulation.
     - simulation_view.py: Handles the visual representation of the simulation.
     - tkinter: Provides GUI components for the simulation.
+    - random: Provides random assignment of traits, and object starting positions
 """
 
 import tkinter as tk
@@ -26,19 +27,19 @@ from simulation_view import SimulationView
 
 # Configuration Constants
 BOUNDS = (400, 400)
-NUM_AGENTS = 10
+NUM_AGENTS = 3
 START_SIZE = 10
 VARIABILITY = 2
-FOOD_AMOUNT = 10
+FOOD_AMOUNT = 20
 MAX_TICKS = 2000
 TICK_RATE = 10  # Milliseconds between ticks
 
 # Function Definitions
 def generate_edge_position(bounds):
-    return Pos(
-        random.choice([0, bounds[0]]),
-        random.randint(0, bounds[1])
-    )
+    return random.choice([
+        Pos(random.choice([0, bounds[0]]), random.randint(0, bounds[1])),
+        Pos(random.randint(0, bounds[0]), random.choice([0, bounds[1]]))
+    ])
 
 def generate_food_position(bounds, food, food_amount):
     # Keeps food from spawning too close to the edge
@@ -77,8 +78,8 @@ if __name__ == "__main__":
         rand_pos = generate_edge_position(BOUNDS)
         new_agent = Agent(
             rand_pos,
-            random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
-            random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
+            random.randint(0,2),
+            random.randint(1,4),
             random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
             random.randint(START_SIZE - VARIABILITY, START_SIZE + VARIABILITY),
             BOUNDS

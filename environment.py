@@ -26,7 +26,9 @@ class Environment:
     def check_for_collisions(self):
         for agent in self.population:
             for food_item in self.food[:]:  # Copy the list to avoid modification during iteration
-                if agent.position.distance_to(food_item.position) <= agent.ENTITY_RADIUS + food_item.ENTITY_RADIUS:
+                agent_size = agent.ENTITY_RADIUS + agent.size # Factor in agent size
+
+                if agent.position.distance_to(food_item.position) <= agent_size + food_item.ENTITY_RADIUS:
                     agent.consume_food()
                     self.remove_food(food_item)
 

@@ -65,24 +65,26 @@ class Agent:
         # Additional actions can be added here based on the agent's state after sensing
         # For example, handling eating if food is at the current position
 
-    def move(self, delta_x=None, delta_y=None):
-        if self.energy > 0:
-            # If specific movements are not specified, use random movement
-            if delta_x is None:
-                delta_x = random.randint(-self.speed, self.speed)
-            if delta_y is None:
-                delta_y = random.randint(-self.speed, self.speed)
-            
-            # Update position with boundary checks
-            new_x = max(0, min(self.position.x + delta_x, self.bounds[0]))
-            new_y = max(0, min(self.position.y + delta_y, self.bounds[1]))
+    def move(self, delta_x, delta_y):
+        if self.energy <= 0:
+            return
 
-            # Apply the movement
-            self.position.x = new_x
-            self.position.y = new_y
+        # Normalize the direction vector
+        magnitude = math.sqrt(delta_x ** 2 + delta_y ** 2)
+        if magnitude != 0:
+            delta_x /= magnitude
+            delta_y /= magnitude
 
-            # Deduct energy for the movement
-            self.energy -= 1
+        # Move a distance proportional to the agent's speed
+        delta_x *= self.speed
+        delta_y *= self.speed
+
+        # Update position
+        self.position.x = max(0, min(self.position.x + delta_x, self.bounds[0]))
+        self.position.y = max(0, min(self.position.y + delta_y, self.bounds[1]))
+
+        # Deduct energy based on the speed, e.g., energy -= speed^2
+        self.energy -= (self.speed ** 2) * (self.size ** 2)
 
     def consume_food(self):
         self.food_consumed += 1
