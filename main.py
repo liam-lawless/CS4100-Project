@@ -18,15 +18,15 @@ from simulation import SimulationRunner
 
 # Configuration Constants
 BOUNDS = (500, 500)
-NUM_AGENTS = 4
-NUM_ADVERSARIES = 1
-FOOD_AMOUNT = 10
+NUM_AGENTS = 20
+NUM_ADVERSARIES = 0
+FOOD_AMOUNT = 40
 START_SIZE = 10
 VARIABILITY = 2
 MAX_TICKS = 3000
-TICK_RATE = 10  # Milliseconds between ticks
-NUM_GENERATIONS = 5  # The total number of generations to simulate
-DELAY_BETWEEN_GENERATIONS = 1500  # Delay in milliseconds between generations
+TICK_RATE = 1  # Milliseconds between ticks
+NUM_GENERATIONS = 20  # The total number of generations to simulate
+DELAY_BETWEEN_GENERATIONS = 100  # Delay in milliseconds between generations
 
 if __name__ == "__main__":
     # Set up the GUI

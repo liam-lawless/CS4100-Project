@@ -20,8 +20,8 @@ import random
 
 class Agent(Entity):
     DEFAULT_ENERGY = 15000  # Overriding the default energy level for agents
-    MUTATION_PROBABILITY = 0.1  # Probability a trait will mutate on reproduction
-    MUTATION_AMOUNT = 1     # Amount a trait will mutate +/-
+    MUTATION_PROBABILITY = 0.4  # Probability a trait will mutate on reproduction
+    MUTATION_AMOUNT = 0.2     # Amount a trait will mutate +/-
     GREEDY = False  # Agents will continue to eat after 2 food, do not need to return home
 
     def __init__(self, position, size, speed, vision, strength, bounds):

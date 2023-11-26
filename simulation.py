@@ -18,6 +18,7 @@ from environment import Environment
 from food import Food
 from pos import Pos
 from simulation_view import SimulationView
+from visualize import Visualize
 
 class SimulationRunner:
     def __init__(self, root, canvas, bounds, num_agents, num_adversaries, food_amount, max_ticks, tick_rate, num_generations, delay_between_generations):
@@ -37,11 +38,14 @@ class SimulationRunner:
         self.agents = []
         self.food = []
         self.adversaries = []
+        self.trait_history = {'size': [], 'speed': [], 'vision': [], 'strength': []}
+        self.trait_distribution = {'size': [], 'speed': [], 'vision': [], 'strength': []}
 
         self.sim = None
         self.view = None
 
         self.setup_simulation()  # Set self.sim to a new Environment instance
+        
 
     def setup_simulation(self):
         self.sim = Environment(self.agents, self.adversaries, self.food, self.bounds)
@@ -56,7 +60,7 @@ class SimulationRunner:
                 round(random.uniform(1.8, 2.2), 1),   # size
                 round(random.uniform(1.8, 2.2), 1),   # speed
                 round(random.uniform(7.0, 8.0), 1),   # vision
-                round(random.uniform(1.0, 3.0), 1),   # strength
+                round(random.uniform(1.8, 2.2), 1),   # strength
                 self.bounds
             )
             self.agents.append(new_agent)
@@ -122,6 +126,13 @@ class SimulationRunner:
         else:
             print(f"Simulation finished after {self.num_generations} generations")
 
+            # When the simulation ends, visualize the data 
+            if self.current_generation == self.num_generations:
+                self.collect_trait_data()  # Call after the last generation
+                visualization = Visualize(self.trait_distribution, self.trait_history)
+                for trait in self.trait_history.keys():
+                    visualization.plot_trait_history(trait)
+
     def start_generation(self):
         self.game_tick = 0
         self.current_generation += 1
@@ -136,6 +147,7 @@ class SimulationRunner:
 
         if all(agent.is_safe() or agent.energy <= 0 for agent in self.agents):
             print(f"All agents are done for generation {self.current_generation}. Ending generation.")
+            self.collect_trait_data() # collect data from each generation
             self.root.after(self.delay_between_generations, self.end_generation)
             return
 
@@ -148,3 +160,22 @@ class SimulationRunner:
 
     def run(self):
         self.start_generation()
+
+    def collect_trait_data(self):
+        # Calculate the average traits of agents for the line chart
+        average_traits = {
+            'size': sum(agent.size for agent in self.agents) / len(self.agents),
+            'speed': sum(agent.speed for agent in self.agents) / len(self.agents),
+            'vision': sum(agent.vision for agent in self.agents) / len(self.agents),
+            'strength': sum(agent.strength for agent in self.agents) / len(self.agents),
+        }
+
+        # Append the average of each trait to its respective history list
+        for trait, average in average_traits.items():
+            self.trait_history[trait].append(average)
+
+        # Collect the distribution of each trait for the bar chart
+        # Do this only at the end of the simulation
+        if self.current_generation == self.num_generations:
+            for trait in self.trait_distribution.keys():
+                self.trait_distribution[trait] = [getattr(agent, trait) for agent in self.agents]
