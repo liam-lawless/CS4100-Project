@@ -3,17 +3,17 @@
 
 **TODO**
 - ~~Abstract adversary and agent classes, extract commonalities/methods or make an abstract class that they both extend from. Many similar methods~~
-- Implement adversaries
-    - Adversary needs to eat N amount of agents per day to survive, otherwise dies.
+- ~~Implement adversaries~~
+    - ~~Adversary needs to eat N amount of agents per day to survive, otherwise dies.~~
 - Implement QLearning
 - Implement more actions
     - ~~flee~~ 
     - ~~return home~~
     - die of old age
     - ~~sated (or should it be kept as greedy i.e. agents eat as much as they want)~~
-    - reproduce
-    - big agents eat little agents? 
-- Implement generations
+    - ~~reproduce~~
+    - big agents eat little agents? Implement functionality for size
+- ~~Implement generations~~
 - Implement graphs and visualizations
 - Document code
 - Unit Test
@@ -26,3 +26,5 @@ Bonus:
 - Implement clicking on an agent and getting its stats relayed back to the user
 
 #### Notes
+- Should agents that have run out of energy and are stuck in place be vulnerable to adversaries?
+- How many generations before agents die of old age?

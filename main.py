@@ -28,13 +28,15 @@ from adversary import Adversary
 
 # Configuration Constants
 BOUNDS = (500, 500)
-NUM_AGENTS = 10
-NUM_ADVERSARIES = 2
-FOOD_AMOUNT = 20
+NUM_AGENTS = 4
+NUM_ADVERSARIES = 1
+FOOD_AMOUNT = 10
 START_SIZE = 10
 VARIABILITY = 2
-MAX_TICKS = 20000
+MAX_TICKS = 1000
 TICK_RATE = 10  # Milliseconds between ticks
+NUM_GENERATIONS = 5  # The total number of generations to simulate
+DELAY_BETWEEN_GENERATIONS = 2500  # Delay in milliseconds between generations
 
 # Function Definitions
 def generate_edge_position(bounds):
@@ -42,6 +44,12 @@ def generate_edge_position(bounds):
         Pos(random.choice([0, bounds[0]]), random.randint(0, bounds[1])),
         Pos(random.randint(0, bounds[0]), random.choice([0, bounds[1]]))
     ])
+
+def generate_center_position(bounds):
+    return Pos(
+            random.randint((bounds[0]/2)-10, (bounds[0]/2)+10),
+            random.randint((bounds[1]/2)-10, (bounds[1]/2)+10),
+        )
 
 def generate_food_position(bounds, food, food_amount):
     # Keeps food from spawning too close to the edge
@@ -56,6 +64,45 @@ def generate_food_position(bounds, food, food_amount):
         if all(new_position != f.position for f in food):
             food.append(Food(new_position))
 
+def end_generation():
+    # Clear the canvas for the next generation
+    view.clear_canvas()
+    
+    # Assess agents and adversaries for survival and reproduction
+    next_generation_agents = [agent for agent in agents if agent.consumed >= 1]
+    next_generation_adversaries = [adversary for adversary in adversaries if adversary.consumed >= 1]
+
+    # Reproduce agents
+    for agent in agents:
+        if agent.consumed >= 2 and agent.is_safe():
+            offspring = agent.reproduce()
+            next_generation_agents.append(offspring)
+
+    # Reset positions and food for the next generation
+    agents[:] = next_generation_agents
+    adversaries[:] = next_generation_adversaries
+    food[:] = []
+    generate_food_position(BOUNDS, food, FOOD_AMOUNT)
+    for agent in agents:
+        agent.reset_for_new_generation()
+        agent.position = generate_edge_position(BOUNDS)
+    for adversary in adversaries:
+        adversary.reset_for_new_generation()
+        adversary.position = generate_center_position(BOUNDS)  
+
+    # Check if we have more generations to simulate
+    if current_generation < NUM_GENERATIONS:
+        root.after(DELAY_BETWEEN_GENERATIONS, start_generation)
+    else:
+        print(f"Simulation finished after {NUM_GENERATIONS} generations")
+
+def start_generation():
+    global gameTick, current_generation
+    gameTick = 0
+    current_generation += 1
+    print(f"Starting generation {current_generation}")
+    root.after(TICK_RATE, game_tick)
+
 def game_tick():
     global gameTick
     gameTick += 1
@@ -63,15 +110,25 @@ def game_tick():
     sim.update_environment()
     view.update_view()
 
-    if gameTick < MAX_TICKS:
-        root.after(TICK_RATE, game_tick)
-    else:
-        print("Simulation ended after reaching the maximum number of ticks")
+    if all(agent.is_safe() or agent.energy <= 0 for agent in agents):
+        print(f"All agents are done for generation {current_generation}. Ending generation.")
+
+        root.after(DELAY_BETWEEN_GENERATIONS, end_generation)
+        return
+    
+    # Check if max ticks reached
+    if gameTick >= MAX_TICKS:
+        print(f"Reached max ticks for generation {current_generation}. Ending generation.")
+        end_generation()
+        return
+
+    root.after(TICK_RATE, game_tick)
 
 # Main Execution
 if __name__ == "__main__":
     # Initialize game variables
     gameTick = 0
+    current_generation = 0
     agents = []
     food = []
     adversaries = []
@@ -91,10 +148,7 @@ if __name__ == "__main__":
 
     for _ in range(NUM_ADVERSARIES):
         # Generate a random pos near the middle of the canvas
-        rand_pos = Pos(
-            random.randint((BOUNDS[0]/2)-10, (BOUNDS[0]/2)+10),
-            random.randint((BOUNDS[1]/2)-10, (BOUNDS[1]/2)+10),
-        )
+        rand_pos = generate_center_position(BOUNDS)
         #  (position, size, speed, vision, strength, bounds)
         new_adversary = Adversary(rand_pos, 5, 2.0, 20, 2.0, BOUNDS)
         adversaries.append(new_adversary)
@@ -112,7 +166,9 @@ if __name__ == "__main__":
     view = SimulationView(canvas, sim)
 
     # Start the simulation loop
-    root.after(TICK_RATE, game_tick)
+    start_generation()
 
     # Start the Tkinter event loop
     root.mainloop()
+
+

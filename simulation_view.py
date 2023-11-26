@@ -8,14 +8,15 @@ Description:
     This file contains the SimulationView class, which handles all the graphical representations of the simulation on the Tkinter canvas.
 
 Dependencies:
-
+    - AgentSensingView
+    - math
 """
 
 from agent_sensing_view import AgentSensingView
 import math
 
 class SimulationView:
-    SHOW_SENSING = True
+    SHOW_SENSING = False
 
     def __init__(self, canvas, environment):
         self.canvas = canvas
@@ -115,3 +116,19 @@ class SimulationView:
         self.draw_agents()
         self.draw_food()
         self.draw_adversaries()
+
+    def clear_canvas(self):
+        # Clear existing adversaries from the canvas
+        for shape in self.adversary_shapes.values():
+            self.canvas.delete(shape)
+        self.adversary_shapes.clear()
+
+        # Clear existing food from the canvas
+        for shape in self.food_shapes.values():
+            self.canvas.delete(shape)
+        self.food_shapes = {}
+
+        # Clear existing agents from the canvas
+        for shape in self.agent_shapes.values():
+            self.canvas.delete(shape)
+        self.agent_shapes.clear()

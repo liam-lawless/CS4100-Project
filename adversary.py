@@ -50,15 +50,11 @@ class Adversary(Entity):
         else:
             self.wander()
 
-    def move_towards(self, target_position):
-        # Calculate the direction towards the target
-        direction_to_target = math.atan2(target_position.y - self.position.y, target_position.x - self.position.x)
-
-        # Move one step in the direction of the target
-        delta_x = math.cos(direction_to_target)
-        delta_y = math.sin(direction_to_target)
-
-        self.move(delta_x, delta_y)
+    def reset_for_new_generation(self):
+        self.consumed = 0
+        self.energy = Adversary.DEFAULT_ENERGY
+        self.defended_agents.clear()
+        # Add any other future properties that need to be reset for a new generation
 
     def print_stats(self):
         print(f'Agents Eaten: {self.consumed}')

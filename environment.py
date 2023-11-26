@@ -51,7 +51,7 @@ class Environment:
                 if adversary.position.distance_to(agent.position) <= adversary.ENTITY_RADIUS + agent.ENTITY_RADIUS and not agent.is_safe():
 
                     # check if the agent can defend the attack from the adversary
-                    if not agent.defend_against_adversary(adversary):
+                    if agent.strength > adversary.attack_power:
                         # Handle the agent being eaten by the adversary
                         self.remove_agent(agent)
                         adversary.consume()

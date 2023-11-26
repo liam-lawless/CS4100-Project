@@ -105,7 +105,3 @@ class Entity:
     # Consume either a food item or an agent
     def consume(self):
         self.consumed += 1
-
-    def reset_energy(self):
-        # This might set the inherited energies too low
-        self.energy = Entity.DEFAULT_ENERGY 

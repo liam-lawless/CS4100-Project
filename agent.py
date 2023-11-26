@@ -41,7 +41,9 @@ class Agent(Entity):
             return  # Agent does nothing
         
         # Check if the agent is satisfied and needs to return to the edge
-        self.check_satisfied()
+        if self.consumed >= 2 and not Agent.GREEDY:
+            self.satisfied = True
+
         if self.satisfied:
             self.return_home()
         else:
@@ -95,11 +97,6 @@ class Agent(Entity):
         self.heading = (direction_to_target + math.pi) % (2 * math.pi)
         self.move(math.cos(self.heading), math.sin(self.heading))
 
-    def check_satisfied(self):
-        # Check if the agent has eaten enough food
-        if self.consumed >= 2 and not Agent.GREEDY:
-            self.satisfied = True
-
     def return_home(self):
         # Determine the closest edge of the canvas to the agent's current position
         edges = [Pos(0, self.position.y), Pos(self.bounds[0], self.position.y),
@@ -133,14 +130,12 @@ class Agent(Entity):
             return max(result, 1.0)  # Ensure we don't get negative or 0 value traits
         return trait_value
     
-    def defend_against_adversary(self, adversary):
-        # The agent uses its strength to fend off the adversary
-        if self.strength > adversary.attack_power:
-            # Successfully defend against the adversary, adversary fucks off
-            return True
-        else:
-            # Failed to defend, gets eaten
-            return False
+    def reset_for_new_generation(self):
+        self.consumed = 0
+        self.energy = Agent.DEFAULT_ENERGY
+        self.satisfied = False
+        self.at_edge = False
+        # Add any other future properties that need to be reset for a new generation
 
     def print_stats(self):
         print(self)     # Helps identify  agents when testing with small amounts
