@@ -28,3 +28,4 @@ Bonus:
 #### Notes
 - Should agents that have run out of energy and are stuck in place be vulnerable to adversaries?
 - How many generations before agents die of old age?
+- What is a good mutation rate? Find the balance between number of generations and number of mutations
