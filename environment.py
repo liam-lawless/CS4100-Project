@@ -33,8 +33,9 @@ class Environment:
             if adversary.energy > 0 and adversary.cooldown == 0:
                 adversary.seek_agents(self.population)
 
-        # Check for agent-adversary collisions
+        # Check for agent-adversary and agent-agent collisions
         self.check_for_predation()
+        self.check_for_cannibalism()
 
     def check_for_collisions(self):
         for agent in self.population:
@@ -51,13 +52,29 @@ class Environment:
                 if adversary.position.distance_to(agent.position) <= adversary.ENTITY_RADIUS + agent.ENTITY_RADIUS and not agent.is_safe():
 
                     # check if the agent can defend the attack from the adversary
-                    if agent.strength > adversary.attack_power:
+                    if agent.strength < adversary.attack_power:
                         # Handle the agent being eaten by the adversary
                         self.remove_agent(agent)
                         adversary.consume()
                         adversary.cooldown = adversary.COOLDOWN_AFTER_EATING
                     else:
                         adversary.defended_agents.append(agent)
+
+    def check_for_cannibalism(self):
+        for predator in self.population:
+            # Identify potential prey within the sensing radius
+            potential_prey = [prey for prey in self.population if prey.size <= (predator.size - 0.75) 
+                            and predator is not prey 
+                            and predator.position.distance_to(prey.position) <= predator.vision * predator.VISION_RANGE_MULTIPLIER]
+            
+            for prey in potential_prey:
+                # Check if the predator is close enough to cannibalize the prey
+                if predator.position.distance_to(prey.position) <= predator.ENTITY_RADIUS + prey.ENTITY_RADIUS:
+                    # Cannibalize the prey
+                    predator.consume()
+                    self.remove_agent(prey)
+                    print("bitch got cannibalized")
+                    #break  # One cannibalism event per tick per predator
 
     def remove_food(self, food_item):
         self.food.remove(food_item)

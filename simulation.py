@@ -21,6 +21,12 @@ from simulation_view import SimulationView
 from visualize import Visualize
 
 class SimulationRunner:
+    INITIAL_TRAIT_VALUE = 2.0
+    TRAIT_VARIANCE = 0.3
+    ADVERSARY_ATTACK = 2.5
+    ADVERSARY_SPEED = 2.2
+    ADVERSARY_VISION = 20
+
     def __init__(self, root, canvas, bounds, num_agents, num_adversaries, food_amount, max_ticks, tick_rate, num_generations, delay_between_generations):
         self.root = root
         self.canvas = canvas
@@ -38,7 +44,7 @@ class SimulationRunner:
         self.agents = []
         self.food = []
         self.adversaries = []
-        self.trait_history = {'size': [], 'speed': [], 'vision': [], 'strength': []}
+        self.trait_history = {'population': [],'size': [], 'speed': [], 'vision': [], 'strength': []}
         self.trait_distribution = {'size': [], 'speed': [], 'vision': [], 'strength': []}
 
         self.sim = None
@@ -55,19 +61,29 @@ class SimulationRunner:
     def populate_simulation(self):
         for _ in range(self.num_agents):
             rand_pos = self.generate_edge_position()
+            # position, size, speed, vision, strength, bounds
             new_agent = Agent(
                 rand_pos,
-                round(random.uniform(1.8, 2.2), 1),   # size
-                round(random.uniform(1.8, 2.2), 1),   # speed
-                round(random.uniform(7.0, 8.0), 1),   # vision
-                round(random.uniform(1.8, 2.2), 1),   # strength
+                round(random.uniform(
+                    SimulationRunner.INITIAL_TRAIT_VALUE-SimulationRunner.TRAIT_VARIANCE,
+                    SimulationRunner.INITIAL_TRAIT_VALUE+SimulationRunner.TRAIT_VARIANCE), 1),
+                round(random.uniform(
+                    SimulationRunner.INITIAL_TRAIT_VALUE-SimulationRunner.TRAIT_VARIANCE,
+                    SimulationRunner.INITIAL_TRAIT_VALUE+SimulationRunner.TRAIT_VARIANCE), 1),
+                round(random.uniform(
+                    SimulationRunner.INITIAL_TRAIT_VALUE-SimulationRunner.TRAIT_VARIANCE,
+                    SimulationRunner.INITIAL_TRAIT_VALUE+SimulationRunner.TRAIT_VARIANCE), 1),
+                round(random.uniform(
+                    SimulationRunner.INITIAL_TRAIT_VALUE-SimulationRunner.TRAIT_VARIANCE,
+                    SimulationRunner.INITIAL_TRAIT_VALUE+SimulationRunner.TRAIT_VARIANCE), 1),
                 self.bounds
             )
             self.agents.append(new_agent)
 
         for _ in range(self.num_adversaries):
             rand_pos = self.generate_center_position()
-            new_adversary = Adversary(rand_pos, 5, 2.0, 20, 2.0, self.bounds)
+            # position, size, speed, vision, attack_power, bounds
+            new_adversary = Adversary(rand_pos, 5, SimulationRunner.ADVERSARY_SPEED, SimulationRunner.ADVERSARY_VISION, SimulationRunner.ADVERSARY_ATTACK, self.bounds)
             self.adversaries.append(new_adversary)
 
         self.generate_food_position()
@@ -80,8 +96,8 @@ class SimulationRunner:
 
     def generate_center_position(self):
         return Pos(
-            random.randint((self.bounds[0]/2)-10, (self.bounds[0]/2)+10),
-            random.randint((self.bounds[1]/2)-10, (self.bounds[1]/2)+10),
+            random.randint((self.bounds[0]/2)-50, (self.bounds[0]/2)+50),
+            random.randint((self.bounds[1]/2)-50, (self.bounds[1]/2)+50),
         )
 
     def generate_food_position(self):
@@ -99,13 +115,17 @@ class SimulationRunner:
     def end_generation(self):
         self.view.clear_canvas()
 
-        next_generation_agents = [agent for agent in self.agents if agent.consumed >= 1]
-        next_generation_adversaries = [adversary for adversary in self.adversaries if adversary.consumed >= 1]
-
+        # Increment age and filter agents for the next generation
+        next_generation_agents = []
         for agent in self.agents:
-            if agent.consumed >= 2 and agent.is_safe():
-                offspring = agent.reproduce()
-                next_generation_agents.append(offspring)
+            agent.age += 1  # Increment agent age
+            if agent.consumed and agent.age < Agent.MAX_AGE:
+                next_generation_agents.append(agent)
+                if agent.consumed >= 2 and agent.is_safe():
+                    offspring = agent.reproduce()
+                    next_generation_agents.append(offspring)
+        
+        next_generation_adversaries = [adversary for adversary in self.adversaries if adversary.consumed >= 1]
 
         self.agents[:] = next_generation_agents
         self.adversaries[:] = next_generation_adversaries
@@ -128,7 +148,7 @@ class SimulationRunner:
 
             # When the simulation ends, visualize the data 
             if self.current_generation == self.num_generations:
-                self.collect_trait_data()  # Call after the last generation
+                self.collect_data()  # Call after the last generation
                 visualization = Visualize(self.trait_distribution, self.trait_history)
                 for trait in self.trait_history.keys():
                     visualization.plot_trait_history(trait)
@@ -147,7 +167,7 @@ class SimulationRunner:
 
         if all(agent.is_safe() or agent.energy <= 0 for agent in self.agents):
             print(f"All agents are done for generation {self.current_generation}. Ending generation.")
-            self.collect_trait_data() # collect data from each generation
+            self.collect_data() # collect data from each generation
             self.root.after(self.delay_between_generations, self.end_generation)
             return
 
@@ -161,21 +181,23 @@ class SimulationRunner:
     def run(self):
         self.start_generation()
 
-    def collect_trait_data(self):
+    def collect_data(self):
         # Calculate the average traits of agents for the line chart
-        average_traits = {
-            'size': sum(agent.size for agent in self.agents) / len(self.agents),
-            'speed': sum(agent.speed for agent in self.agents) / len(self.agents),
-            'vision': sum(agent.vision for agent in self.agents) / len(self.agents),
-            'strength': sum(agent.strength for agent in self.agents) / len(self.agents),
-        }
+        if len(self.agents) > 0:
+            data = {
+                'population': len(self.agents),
+                'size': sum(agent.size for agent in self.agents) / len(self.agents),
+                'speed': sum(agent.speed for agent in self.agents) / len(self.agents),
+                'vision': sum(agent.vision for agent in self.agents) / len(self.agents),
+                'strength': sum(agent.strength for agent in self.agents) / len(self.agents)
+            }
 
-        # Append the average of each trait to its respective history list
-        for trait, average in average_traits.items():
-            self.trait_history[trait].append(average)
+            # Append the average of each trait to its respective history list
+            for trait, average in data.items():
+                self.trait_history[trait].append(average)
 
-        # Collect the distribution of each trait for the bar chart
-        # Do this only at the end of the simulation
-        if self.current_generation == self.num_generations:
-            for trait in self.trait_distribution.keys():
-                self.trait_distribution[trait] = [getattr(agent, trait) for agent in self.agents]
+            # Collect the distribution of each trait for the bar chart
+            # Do this only at the end of the simulation
+            if self.current_generation == self.num_generations:
+                for trait in self.trait_distribution.keys():
+                    self.trait_distribution[trait] = [getattr(agent, trait) for agent in self.agents]

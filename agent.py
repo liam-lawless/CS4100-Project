@@ -22,6 +22,7 @@ class Agent(Entity):
     DEFAULT_ENERGY = 15000  # Overriding the default energy level for agents
     MUTATION_PROBABILITY = 0.4  # Probability a trait will mutate on reproduction
     MUTATION_AMOUNT = 0.2     # Amount a trait will mutate +/-
+    MAX_AGE = 5
     GREEDY = False  # Agents will continue to eat after 2 food, do not need to return home
 
     def __init__(self, position, size, speed, vision, strength, bounds):
@@ -30,6 +31,7 @@ class Agent(Entity):
         self.strength = strength
         self.satisfied = False
         self.at_edge = False
+        self.age = 0
 
     def calculate_energy_cost(self):
         # Agents might have a different energy cost calculation
@@ -70,12 +72,13 @@ class Agent(Entity):
             if self is not adversary and self.position.distance_to(adversary.position) <= vision_radius:
                 adversary_in_sight.append(adversary)
 
-        # Optionally, detect other agents within the sensing radius
-        # agents_in_sight = []
-        # for other_agent in environment.population:
-        #     if self is not other_agent and self.position.distance_to(other_agent.position) <= vision_radius:
-        #         agents_in_sight.append(other_agent)
-
+        # Detect other agents within the sensing radius
+        agents_in_sight = []
+        for other_agent in environment.population:
+            if self is not other_agent and self.position.distance_to(other_agent.position) <= vision_radius:
+                agents_in_sight.append(other_agent)
+        
+                
         # Perform actions based on the sensed environment
         # For example, move towards the closest food item
         if adversary_in_sight:
@@ -84,6 +87,19 @@ class Agent(Entity):
         elif food_in_sight:
             closest_food = min(food_in_sight, key=lambda f: self.position.distance_to(f.position))
             self.move_towards(closest_food.position)
+        elif agents_in_sight:
+            small_agents_in_sight = []
+            for agent in agents_in_sight:
+                if self.size - agent.size >= 0.75:
+                    small_agents_in_sight.append(agent)
+
+            if small_agents_in_sight:
+                closest_agent = min(small_agents_in_sight, key=lambda f: self.position.distance_to(f.position))
+
+                self.move_towards(closest_agent.position)
+            
+            else:
+                self.wander()  
 
         # If no food is in sight, continue wandering
         else:
@@ -131,7 +147,7 @@ class Agent(Entity):
         return trait_value
     
     def reset_for_new_generation(self):
-        self.consumed = 0
+        super().reset_for_new_generation()  # Reset common entity properties
         self.energy = Agent.DEFAULT_ENERGY
         self.satisfied = False
         self.at_edge = False

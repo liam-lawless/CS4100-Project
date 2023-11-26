@@ -17,7 +17,7 @@ import math
 
 class Adversary(Entity):
     DEFAULT_ENERGY = 1000  # Overriding the default energy level for adversaries
-    COOLDOWN_AFTER_EATING = 100  # Cooldown period after eating
+    COOLDOWN_AFTER_EATING = 400  # Cooldown period after eating
 
     def __init__(self, position, size, speed, vision, attack_power, bounds):
         super().__init__(position, size, speed, vision, bounds)
@@ -51,8 +51,9 @@ class Adversary(Entity):
             self.wander()
 
     def reset_for_new_generation(self):
-        self.consumed = 0
+        super().reset_for_new_generation()  # Reset common entity properties
         self.energy = Adversary.DEFAULT_ENERGY
+        self.cooldown = 0  # Reset the cooldown for the new generation
         self.defended_agents.clear()
         # Add any other future properties that need to be reset for a new generation
 

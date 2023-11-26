@@ -19,7 +19,7 @@ from pos import Pos
 
 class Entity:
     ENTITY_RADIUS = 5
-    VISION_RANGE_MULTIPLIER = 5
+    VISION_RANGE_MULTIPLIER = 20
     MAX_ANGLE_CHANGE = math.radians(15)  # 15 degrees
     DEFAULT_ENERGY = 500  # Set a default value to be overridden by subclasses
 
@@ -105,3 +105,8 @@ class Entity:
     # Consume either a food item or an agent
     def consume(self):
         self.consumed += 1
+
+    def reset_for_new_generation(self):
+        self.energy = Entity.DEFAULT_ENERGY
+        self.consumed = 0
+        # Add any other properties that need to be reset
