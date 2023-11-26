@@ -19,7 +19,7 @@ import math
 import random
 
 class Agent(Entity):
-    DEFAULT_ENERGY = 12500  # Overriding the default energy level for agents
+    DEFAULT_ENERGY = 15000  # Overriding the default energy level for agents
     MUTATION_PROBABILITY = 0.1  # Probability a trait will mutate on reproduction
     MUTATION_AMOUNT = 1     # Amount a trait will mutate +/-
     GREEDY = False  # Agents will continue to eat after 2 food, do not need to return home
@@ -33,7 +33,7 @@ class Agent(Entity):
 
     def calculate_energy_cost(self):
         # Agents might have a different energy cost calculation
-        return (self.speed ** 2) * (self.size ** 2) + self.vision + self.strength
+        return (self.speed ** 2) * (self.size ** 2) * self.strength + self.vision
     
     def perform_action(self, environment):
         # If the agent is satisfied and at the edge, do nothing
@@ -114,6 +114,10 @@ class Agent(Entity):
         # Move towards the edge if not there yet
         self.move_towards(closest_edge)
 
+    def is_safe(self):
+        # Returns True if the agent is at the edge and has eaten enough food to be safe
+        return self.at_edge and self.satisfied
+
     def reproduce(self):
         size = self.mutate_trait(self.size)
         speed = self.mutate_trait(self.speed)
@@ -128,6 +132,15 @@ class Agent(Entity):
             result = round(trait_value + mutation, 1) # Avoid float inaccuracies 
             return max(result, 1.0)  # Ensure we don't get negative or 0 value traits
         return trait_value
+    
+    def defend_against_adversary(self, adversary):
+        # The agent uses its strength to fend off the adversary
+        if self.strength > adversary.attack_power:
+            # Successfully defend against the adversary, adversary fucks off
+            return True
+        else:
+            # Failed to defend, gets eaten
+            return False
 
     def print_stats(self):
         print(self)     # Helps identify  agents when testing with small amounts

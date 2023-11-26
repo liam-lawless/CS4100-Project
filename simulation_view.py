@@ -56,12 +56,17 @@ class SimulationView:
                 # Convert the agent's heading to a start_angle that corresponds to the canvas orientation
                 heading_degrees = math.degrees(agent.heading)
 
+                if agent.is_safe():
+                    body_color = 'green'
+                else:
+                    body_color = 'blue'
+
                 # Draw the sensing radius centered on the agent
                 self.sensing_view.create_sensing_radius(
                     int(top_left_x), int(top_left_y),
                     int(sensing_radius * 2), int(sensing_radius * 2),  # width and height
                     heading_angle=30,  # Fixed arc angle for the heading indicator
-                    body_fill="blue", heading_fill="green",
+                    body_fill=body_color, heading_fill="green",
                     body_alpha=0.25, heading_alpha=0.4, start_angle=heading_degrees
                 )
 

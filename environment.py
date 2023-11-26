@@ -48,11 +48,16 @@ class Environment:
     def check_for_predation(self):
         for adversary in self.adversaries:
             for agent in self.population[:]:  # Copy to avoid modification during iteration
-                if adversary.position.distance_to(agent.position) <= adversary.ENTITY_RADIUS + agent.ENTITY_RADIUS:
-                    # Handle the agent being eaten by the adversary
-                    self.remove_agent(agent)
-                    adversary.consume()
-                    adversary.cooldown = 100
+                if adversary.position.distance_to(agent.position) <= adversary.ENTITY_RADIUS + agent.ENTITY_RADIUS and not agent.is_safe():
+
+                    # check if the agent can defend the attack from the adversary
+                    if not agent.defend_against_adversary(adversary):
+                        # Handle the agent being eaten by the adversary
+                        self.remove_agent(agent)
+                        adversary.consume()
+                        adversary.cooldown = adversary.COOLDOWN_AFTER_EATING
+                    else:
+                        adversary.defended_agents.append(agent)
 
     def remove_food(self, food_item):
         self.food.remove(food_item)

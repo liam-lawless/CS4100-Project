@@ -28,8 +28,8 @@ from adversary import Adversary
 
 # Configuration Constants
 BOUNDS = (500, 500)
-NUM_AGENTS = 3
-NUM_ADVERSARIES = 1
+NUM_AGENTS = 10
+NUM_ADVERSARIES = 2
 FOOD_AMOUNT = 20
 START_SIZE = 10
 VARIABILITY = 2
@@ -81,10 +81,10 @@ if __name__ == "__main__":
         rand_pos = generate_edge_position(BOUNDS)
         new_agent = Agent(
             rand_pos,
-            round(random.uniform(1.0, 4.0), 1),   # size
-            round(random.uniform(1.0, 2.5), 1),   # speed
-            round(random.uniform(5.0, 10.0), 1),   # vision
-            round(random.uniform(1.0, 4.0), 1),   # strength
+            round(random.uniform(1.8, 2.2), 1),   # size
+            round(random.uniform(1.8, 2.2), 1),   # speed
+            round(random.uniform(7.0, 8.0), 1),   # vision
+            round(random.uniform(1.0, 3.0), 1),   # strength
             BOUNDS
         )
         agents.append(new_agent)
@@ -95,8 +95,8 @@ if __name__ == "__main__":
             random.randint((BOUNDS[0]/2)-10, (BOUNDS[0]/2)+10),
             random.randint((BOUNDS[1]/2)-10, (BOUNDS[1]/2)+10),
         )
-        #  (position, size, speed, vision, bounds)
-        new_adversary = Adversary(rand_pos, 5, 2.0, 20,BOUNDS)
+        #  (position, size, speed, vision, strength, bounds)
+        new_adversary = Adversary(rand_pos, 5, 2.0, 20, 2.0, BOUNDS)
         adversaries.append(new_adversary)
 
     generate_food_position(BOUNDS, food, FOOD_AMOUNT)
