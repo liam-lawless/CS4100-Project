@@ -11,14 +11,13 @@ Dependencies:
 """
 
 import random
-from tkinter import Tk, Canvas
-from agent import Agent
-from adversary import Adversary
-from environment import Environment
-from food import Food
-from pos import Pos
-from simulation_view import SimulationView
-from visualize import Visualize
+from model.agent import Agent
+from model.adversary import Adversary
+from model.environment import Environment
+from model.food import Food
+from model.pos import Pos
+from view.simulation_view import SimulationView
+from view.visualize import Visualize
 
 class SimulationRunner:
     INITIAL_TRAIT_VALUE = 2.0

@@ -73,8 +73,7 @@ class Environment:
                     # Cannibalize the prey
                     predator.consume()
                     self.remove_agent(prey)
-                    print("bitch got cannibalized")
-                    #break  # One cannibalism event per tick per predator
+                    break  # One cannibalism event per tick per predator
 
     def remove_food(self, food_item):
         self.food.remove(food_item)

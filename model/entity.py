@@ -15,7 +15,7 @@ Dependencies:
 
 import random
 import math
-from pos import Pos
+from model.pos import Pos
 
 class Entity:
     ENTITY_RADIUS = 5

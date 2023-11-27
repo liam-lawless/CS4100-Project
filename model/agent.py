@@ -13,8 +13,8 @@ Dependencies:
     - entity
 """
 
-from entity import Entity
-from pos import Pos
+from model.entity import Entity
+from model.pos import Pos
 import math
 import random
 

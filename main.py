@@ -14,7 +14,7 @@ Dependencies:
 """
 
 import tkinter as tk
-from simulation import SimulationRunner
+from controller.simulation import SimulationRunner
 
 # Configuration Constants
 BOUNDS = (500, 500)

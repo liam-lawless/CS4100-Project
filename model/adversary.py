@@ -9,11 +9,10 @@ Description:
 
 Dependencies:
     - entity
-    - math
+
 """
 
-from entity import Entity
-import math
+from model.entity import Entity
 
 class Adversary(Entity):
     DEFAULT_ENERGY = 1000  # Overriding the default energy level for adversaries

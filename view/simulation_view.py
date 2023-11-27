@@ -12,7 +12,7 @@ Dependencies:
     - math
 """
 
-from agent_sensing_view import AgentSensingView
+from view.agent_sensing_view import AgentSensingView
 import math
 
 class SimulationView:
