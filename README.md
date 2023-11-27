@@ -1,1 +1,1 @@
-# CS4100-Project
+# Natural Selection Simulator
