@@ -150,8 +150,10 @@ class SimulationRunner:
             if self.current_generation == self.num_generations:
                 self.collect_data()  # Call after the last generation
                 visualization = Visualize(self.trait_distribution, self.trait_history)
-                for trait in self.trait_history.keys():
-                    visualization.plot_trait_history(trait)
+                # for trait in self.trait_history.keys():
+                #     visualization.plot_trait_history(trait)
+
+                visualization.visualize_history(self.trait_history.keys())
 
     def start_generation(self):
         self.game_tick = 0
