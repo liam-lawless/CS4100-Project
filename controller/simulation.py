@@ -157,7 +157,7 @@ class SimulationRunner:
             print(f"Simulation finished after {self.num_generations} generations")
 
             # Save the general model
-            self.general_model.save('/Users/liamlawless/Desktop/2023-2024 School Year/CS4100/NSS no AI copy/agents/general_model.keras')
+            self.general_model.save('/Users/liamlawless/Desktop/2023-2024 School Year/CS4100/Natural Selection Simulator/agents/general_model.keras')
 
             # When the simulation ends, visualize the data 
             if self.current_generation == self.num_generations:
