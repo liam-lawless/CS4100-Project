@@ -11,22 +11,29 @@ Dependencies:
 """
 
 import random
+import os
 from model.agent import Agent
 from model.adversary import Adversary
 from model.environment import Environment
 from model.food import Food
 from model.pos import Pos
+from model.q_learning_model import train_q_network, ReplayBuffer, build_q_network
 from view.simulation_view import SimulationView
 from view.visualize import Visualize
+from keras.models import load_model
 
 class SimulationRunner:
     INITIAL_TRAIT_VALUE = 2.0
     TRAIT_VARIANCE = 0.3
-    ADVERSARY_ATTACK = 2.5
-    ADVERSARY_SPEED = 2.2
-    ADVERSARY_VISION = 20
+    ADVERSARY_ATTACK = 3.0
+    ADVERSARY_SPEED = 0.75
+    ADVERSARY_VISION = 10
 
-    def __init__(self, root, canvas, bounds, num_agents, num_adversaries, food_amount, max_ticks, tick_rate, num_generations, delay_between_generations):
+    BATCH_SIZE = 64
+    DISCOUNT_FACTOR = 0.95
+
+
+    def __init__(self, root, canvas, bounds, num_agents, num_adversaries, food_amount, max_ticks, tick_rate, num_generations, delay_between_generations, training_enabled):
         self.root = root
         self.canvas = canvas
         self.bounds = bounds
@@ -46,10 +53,14 @@ class SimulationRunner:
         self.trait_history = {'population': [],'size': [], 'speed': [], 'vision': [], 'strength': []}
         self.trait_distribution = {'size': [], 'speed': [], 'vision': [], 'strength': []}
 
+        self.general_model = self.load_or_create_model()
+        self.training_enabled = training_enabled
+
         self.sim = None
         self.view = None
 
         self.setup_simulation()  # Set self.sim to a new Environment instance
+
         
 
     def setup_simulation(self):
@@ -78,6 +89,7 @@ class SimulationRunner:
                 self.bounds
             )
             self.agents.append(new_agent)
+            new_agent.q_network = self.general_model
 
         for _ in range(self.num_adversaries):
             rand_pos = self.generate_center_position()
@@ -115,20 +127,19 @@ class SimulationRunner:
         self.view.clear_canvas()
 
         # Increment age and filter agents for the next generation
-        next_generation_agents = []
         for agent in self.agents:
             agent.age += 1  # Increment agent age
             if agent.consumed and agent.age < Agent.MAX_AGE:
-                next_generation_agents.append(agent)
-                if agent.consumed >= 2 and agent.is_safe():
-                    offspring = agent.reproduce()
-                    next_generation_agents.append(offspring)
+                self.sim.next_gen_population.append(agent)
         
         next_generation_adversaries = [adversary for adversary in self.adversaries if adversary.consumed >= 1]
 
-        self.agents[:] = next_generation_agents
+        self.agents[:] = self.sim.next_gen_population
         self.adversaries[:] = next_generation_adversaries
         self.food[:] = []
+
+        # Train Q-networks of each agent
+        self.train_agents()
 
         for agent in self.agents:
             agent.reset_for_new_generation()
@@ -145,14 +156,17 @@ class SimulationRunner:
         else:
             print(f"Simulation finished after {self.num_generations} generations")
 
+            # Save the general model
+            self.general_model.save('/Users/liamlawless/Desktop/2023-2024 School Year/CS4100/NSS no AI copy/agents/general_model.keras')
+
             # When the simulation ends, visualize the data 
             if self.current_generation == self.num_generations:
                 self.collect_data()  # Call after the last generation
                 visualization = Visualize(self.trait_distribution, self.trait_history)
-                # for trait in self.trait_history.keys():
-                #     visualization.plot_trait_history(trait)
-
                 visualization.visualize_history(self.trait_history.keys())
+        
+        # clear the list for the next simulation
+        self.sim.next_gen_population.clear()
 
     def start_generation(self):
         self.game_tick = 0
@@ -167,10 +181,15 @@ class SimulationRunner:
         self.view.update_view()
 
         if all(agent.is_safe() or agent.energy <= 0 for agent in self.agents):
-            print(f"All agents are done for generation {self.current_generation}. Ending generation.")
-            self.collect_data() # collect data from each generation
-            self.root.after(self.delay_between_generations, self.end_generation)
-            return
+
+            # Check if all agents who are safe have also successfully reproduced
+            all_safe_agents_reproduced = all(agent.successfully_reproduced for agent in self.agents if agent.is_safe())
+
+            if all_safe_agents_reproduced:
+                print(f"All agents are done for generation {self.current_generation}. Ending generation.")
+                self.collect_data() # collect data from each generation
+                self.root.after(self.delay_between_generations, self.end_generation)
+                return
 
         if self.game_tick >= self.max_ticks:
             print(f"Reached max ticks for generation {self.current_generation}. Ending generation.")
@@ -178,6 +197,7 @@ class SimulationRunner:
             return
 
         self.root.after(self.tick_rate, self.run_game_tick)
+        
 
     def run(self):
         self.start_generation()
@@ -202,3 +222,24 @@ class SimulationRunner:
             if self.current_generation == self.num_generations:
                 for trait in self.trait_distribution.keys():
                     self.trait_distribution[trait] = [getattr(agent, trait) for agent in self.agents]
+
+    def train_agents(self):
+        if not self.training_enabled:
+            return  # Skip training if it's disabled
+
+        for agent in self.agents:
+            if len(agent.replay_buffer.buffer) >= self.BATCH_SIZE:
+                train_q_network(agent.q_network, agent.replay_buffer, self.BATCH_SIZE, self.DISCOUNT_FACTOR)
+    
+    def load_or_create_model(self):
+        if os.path.exists('/Users/liamlawless/Desktop/2023-2024 School Year/CS4100/Natural Selection Simulator/agents/general_model.keras'):
+            print("Loading existing model...")
+            model = load_model('/Users/liamlawless/Desktop/2023-2024 School Year/CS4100/Natural Selection Simulator/agents/general_model.keras')
+            self.training_enabled = False  # Flag to disable further training
+            return model
+        else:
+            print("Creating new model...")
+            self.training_enabled = True
+            state_size = 4
+            action_size = 4
+            return build_q_network(state_size, action_size)

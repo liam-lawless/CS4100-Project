@@ -18,13 +18,14 @@ from controller.simulation import SimulationRunner
 
 # Configuration Constants
 BOUNDS = (500, 500)
-NUM_AGENTS = 100
-NUM_ADVERSARIES = 2
-FOOD_AMOUNT = 100
-MAX_TICKS = 3000
+NUM_AGENTS = 10
+NUM_ADVERSARIES = 1
+FOOD_AMOUNT = 30
+MAX_TICKS = 5000
 TICK_RATE = 1  # Milliseconds between ticks
 NUM_GENERATIONS = 10  # The total number of generations to simulate
-DELAY_BETWEEN_GENERATIONS = 10  # Delay in milliseconds between generations
+DELAY_BETWEEN_GENERATIONS = 5  # Delay in milliseconds between generations
+TRAINING_ENABLED = False
 
 if __name__ == "__main__":
     # Set up the GUI
@@ -36,7 +37,7 @@ if __name__ == "__main__":
     # Create and run the simulation
     simulation_runner = SimulationRunner(
         root, canvas, BOUNDS, NUM_AGENTS, NUM_ADVERSARIES, FOOD_AMOUNT,
-        MAX_TICKS, TICK_RATE, NUM_GENERATIONS, DELAY_BETWEEN_GENERATIONS
+        MAX_TICKS, TICK_RATE, NUM_GENERATIONS, DELAY_BETWEEN_GENERATIONS, TRAINING_ENABLED
     )
     simulation_runner.run()
 

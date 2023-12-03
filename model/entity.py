@@ -110,3 +110,4 @@ class Entity:
         self.energy = Entity.DEFAULT_ENERGY
         self.consumed = 0
         # Add any other properties that need to be reset
+

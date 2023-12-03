@@ -15,8 +15,8 @@ Dependencies:
 from model.entity import Entity
 
 class Adversary(Entity):
-    DEFAULT_ENERGY = 1000  # Overriding the default energy level for adversaries
-    COOLDOWN_AFTER_EATING = 400  # Cooldown period after eating
+    DEFAULT_ENERGY = 500
+    COOLDOWN_AFTER_EATING = 500  # Cooldown period after eating
 
     def __init__(self, position, size, speed, vision, attack_power, bounds):
         super().__init__(position, size, speed, vision, bounds)
@@ -26,7 +26,7 @@ class Adversary(Entity):
 
     def calculate_energy_cost(self):
         # Agents might have a different energy cost calculation
-        return 1
+        return 0.25
 
     def update(self):
         # Decrease cooldown over time, recover energy if not in cooldown

@@ -5,20 +5,25 @@
 - ~~Abstract adversary and agent classes, extract commonalities/methods or make an abstract class that they both extend from. Many similar methods~~
 - ~~Implement adversaries~~
     - ~~Adversary needs to eat N amount of agents per day to survive, otherwise dies.~~
-- Implement size functionality
+- ~~Implement size functionality~~
 - Implement QLearning
-- Implement more actions
+- ~~Implement more actions~~
     - ~~flee~~ 
     - ~~return home~~
-    - die of old age
+    - ~~die of old age~~
     - ~~sated (or should it be kept as greedy i.e. agents eat as much as they want)~~
     - ~~reproduce~~
-    - big agents eat little agents? Implement functionality for size
+    - ~~big agents eat little agents~~
 - ~~Implement generations~~
 - ~~Implement graphs and visualizations~~
 - Document code
 - Unit Test
 - Unrelated to code base, create powerpoint presentation for project
+- Get rid of dots on the graphs
+- negative reward for staying in place for too long
+
+Presentation:
+- Populations converging towards specific situations
 
 Needs to happen eventually in no apparent order:
 - ~~Circle back to the cost function to determine how much energy is used per step~~
