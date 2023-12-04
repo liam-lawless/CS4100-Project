@@ -18,12 +18,12 @@ from controller.simulation import SimulationRunner
 
 # Configuration Constants
 BOUNDS = (500, 500)
-NUM_AGENTS = 10
-NUM_ADVERSARIES = 1
+NUM_AGENTS = 5
+NUM_ADVERSARIES = 0
 FOOD_AMOUNT = 30
 MAX_TICKS = 5000
 TICK_RATE = 1  # Milliseconds between ticks
-NUM_GENERATIONS = 10  # The total number of generations to simulate
+NUM_GENERATIONS = 5  # The total number of generations to simulate
 DELAY_BETWEEN_GENERATIONS = 5  # Delay in milliseconds between generations
 TRAINING_ENABLED = False
 

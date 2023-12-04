@@ -33,7 +33,7 @@ class Agent(Entity):
     EPSILON_INITIAL = 1.0
     EPSILON_MIN = 0.01
     EPSILON_DECAY = 1     # Use decay value of 1 if no longer training
-    #EPSILON_DECAY = 0.9999
+    #EPSILON_DECAY = 0.9995
 
     def __init__(self, position, size, speed, vision, strength, bounds):
         super().__init__(position, size, speed, vision, bounds)
@@ -347,7 +347,7 @@ class Agent(Entity):
         reward = 0
 
         # Define reward values
-        REWARD_FOOD_CONSUMED = 30
+        REWARD_FOOD_CONSUMED = 15
         REWARD_SURVIVED_ADVERSARY = 5
         REWARD_REPRODUCED = 10
         PENALTY_LOST_ENERGY = -1
