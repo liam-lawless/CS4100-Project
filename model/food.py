@@ -7,8 +7,6 @@ Last modified: November 24, 2023
 Description:
     This file defines the Food class, representing consumable items in the simulation that agents can eat.
 
-Dependencies:
-
 """
 
 class Food:

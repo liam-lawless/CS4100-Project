@@ -7,9 +7,6 @@ Last modified: November 25, 2023
 Description:
     This file contains the SimulationView class, which handles all the graphical representations of the simulation on the Tkinter canvas.
 
-Dependencies:
-    - AgentSensingView
-    - math
 """
 
 from view.agent_sensing_view import AgentSensingView

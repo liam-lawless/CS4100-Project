@@ -7,8 +7,6 @@ Last modified: November 23, 2023
 Description:
     This file provides the Pos class, which defines a position with x and y coordinates and supports distance calculations.
 
-Dependencies:
-
 """
 
 class Pos:

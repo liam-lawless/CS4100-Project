@@ -5,8 +5,7 @@ Date created: November 29, 2023
 Last modified: November 29, 2023
 
 Description:
-
-Dependencies:
+Provides a Q-learning neural network model and training logic, including the replay buffer mechanism for experience replay, essential for reinforcement learning
 
 """
 

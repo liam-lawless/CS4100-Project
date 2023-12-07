@@ -7,8 +7,6 @@ Last modified: November 25, 2023
 Description:
     The environment.py file defines the Environment class, which manages the simulation space, orchestrates agent interactions, and maintains the overall state of the natural selection simulation.
 
-Dependencies:
-
 """
 
 class Environment:

@@ -7,10 +7,6 @@ Last modified: November 25, 2023
 Description:
     The Agent class encapsulates the attributes and behaviors of prey in a natural selection simulation. It handles their movement, interaction with food, energy levels, and reproduction, simulating evolutionary processes.
 
-Dependencies:
-    - random
-    - math
-    - entity
 """
 
 from model.q_learning_model import build_q_network, ReplayBuffer

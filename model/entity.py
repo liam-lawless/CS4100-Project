@@ -7,10 +7,6 @@ Last modified: November 25, 2023
 Description:
     The Entity class encapsulates the abstract attributes and behaviors of both agents and adversaries in the selection simulation. It handles their movement, interaction with food, and energy levels.
 
-Dependencies:
-    - random
-    - math
-    - pos
 """
 
 import random

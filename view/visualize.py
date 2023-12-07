@@ -5,8 +5,7 @@ Date created: November 26, 2023
 Last modified: November 26, 2023
 
 Description:
-
-Dependencies:
+Provides visualization functionality, offering methods to plot the distribution and historical trends of various traits among agents using matplotlib
 
 """
 

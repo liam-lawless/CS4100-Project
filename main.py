@@ -8,9 +8,8 @@ Description:
     This script serves as the entry point for the natural selection simulation. It sets up the environment, initializes the simulation agents and food sources, and starts the main application loop.
 
 Dependencies:
-    - simulation.py: Handles the control of the simulation.
     - tkinter: Provides GUI components for the simulation.
-
+    
 """
 
 import tkinter as tk

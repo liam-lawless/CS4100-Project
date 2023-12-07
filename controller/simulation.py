@@ -5,8 +5,7 @@ Date created: November 26, 2023
 Last modified: November 26, 2023
 
 Description:
-
-Dependencies:
+Runs the entire simulation process, managing the environment, agents, adversaries, and food entities, while also handling the evolution of agent traits across generations and implementing the reinforcement learning logic.
 
 """
 

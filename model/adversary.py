@@ -7,9 +7,6 @@ Last modified: November 25, 2023
 Description:
     The Adversary class encapsulates the attributes and behaviors of predators in a natural selection simulation. It handles their movement, interaction with agents (prey), energy levels, simulating evolutionary processes.
 
-Dependencies:
-    - entity
-
 """
 
 from model.entity import Entity
