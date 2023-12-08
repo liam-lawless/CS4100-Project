@@ -49,7 +49,7 @@ class Agent(Entity):
 
     def calculate_energy_cost(self):
         # Agents might have a different energy cost calculation
-        return (self.speed ** 2) * (self.size ** 2) * self.strength + self.vision
+        return (self.speed ** 2) * (self.size ** 3) * self.strength + self.vision
 
     def perform_action(self, environment):
 
